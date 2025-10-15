@@ -1,0 +1,12 @@
+package com.virul.medisure.user;
+
+public enum UserRole {
+    POLICY_HOLDER,
+    OPERATION_MANAGER,
+    POLICY_MANAGER,
+    FINANCE_MANAGER,
+    SALES_OFFICER,
+    CLAIMS_MANAGER,
+    MEDICAL_COORDINATOR,
+    CUSTOMER_SUPPORT
+}

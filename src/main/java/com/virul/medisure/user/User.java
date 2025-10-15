@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +38,7 @@ public class User {
     private String phoneNumber;
     
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private UserRole role;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -54,9 +55,5 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-    
-    public enum Role {
-        USER, ADMIN, AGENT
     }
 }
