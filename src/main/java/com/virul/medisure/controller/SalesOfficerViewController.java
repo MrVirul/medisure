@@ -47,6 +47,26 @@ public class SalesOfficerViewController {
         return "sales-officer/dashboard";
     }
 
+    @GetMapping("/applications-queue")
+    public String applicationsQueue(Model model) {
+        return "sales-officer/applications-queue";
+    }
+
+    @GetMapping("/application-review/{id}")
+    public String applicationReview(@PathVariable Long id, Model model) {
+        // In a real implementation, you would fetch the actual application
+        // For now, we'll create a dummy application for demonstration
+        PolicyApplicationResponse application = new PolicyApplicationResponse();
+        application.setId(id);
+        application.setPolicyHolderId(100L + id);
+        application.setPolicyId(200L + id);
+        application.setStatus(com.virul.medisure.sales.PolicyApplicationStatus.SUBMITTED);
+        application.setSubmittedDocuments("document_" + id + ".pdf");
+        
+        model.addAttribute("application", application);
+        return "sales-officer/application-review";
+    }
+
     @GetMapping("/applications")
     public String applicationsList(Model model) {
         return "sales-officer/applications";

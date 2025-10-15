@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Application - MediSure</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .status-badge {
+            font-size: 0.9em;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+            border-left: 2px solid #e9ecef;
+        }
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #007bff;
+        }
+        .document-viewer {
+            height: 400px;
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+        }
+        .checklist-item {
+            margin-bottom: 10px;
+        }
+        .required-doc {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar bg-dark text-white">
+        <div class="p-3">
+            <h4 class="text-center">MediSure</h4>
+            <hr class="text-secondary">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/sales-officer/dashboard">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/sales-officer/applications-queue">
+                        <i class="bi bi-list-task me-2"></i>Applications Queue
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/sales-officer/applications">
+                        <i class="bi bi-file-earmark-text me-2"></i>All Applications
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/sales-officer/reports">
+                        <i class="bi bi-bar-chart me-2"></i>Reports
+                    </a>
+                </li>
+                <li class="nav-item mt-5">
+                    <a class="nav-link text-white" href="/logout">
+                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <span class="navbar-brand">Review Application #<span th:text="${application.id}">1</span></span>
+                <div class="d-flex align-items-center">
+                    <span class="me-3">Welcome, <span th:text="${#authentication.name}">Sales Officer</span></span>
+                    <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <div class="row">
+                <!-- Application Details Column -->
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Application Details</h5>
+                            <a href="/sales-officer/applications-queue" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Queue
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Policy Holder Information</h6>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Holder ID:</strong></td>
+                                            <td th:text="${application.policyHolderId}">PH001</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Name:</strong></td>
+                                            <td>John Doe</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Email:</strong></td>
+                                            <td>johndoe@example.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Phone:</strong></td>
+                                            <td>+1 234 567 8900</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Policy Information</h6>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Policy ID:</strong></td>
+                                            <td th:text="${application.policyId}">POL001</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Type:</strong></td>
+                                            <td>Health Insurance</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Coverage:</strong></td>
+                                            <td>$500,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Premium:</strong></td>
+                                            <td>$250/month</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Required Documents Checklist -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h6>Required Documents Checklist</h6>
+                                    <div class="border p-3">
+                                        <div class="checklist-item">
+                                            <div class="form-check required-doc p-2">
+                                                <input class="form-check-input" type="checkbox" id="doc1">
+                                                <label class="form-check-label" for="doc1">
+                                                    <strong>Government ID</strong> - Passport or Driver's License
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <div class="form-check required-doc p-2">
+                                                <input class="form-check-input" type="checkbox" id="doc2">
+                                                <label class="form-check-label" for="doc2">
+                                                    <strong>Proof of Income</strong> - Recent pay stubs or tax returns
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <div class="form-check p-2">
+                                                <input class="form-check-input" type="checkbox" id="doc3">
+                                                <label class="form-check-label" for="doc3">
+                                                    <strong>Medical History</strong> - Health questionnaire
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <div class="form-check p-2">
+                                                <input class="form-check-input" type="checkbox" id="doc4">
+                                                <label class="form-check-label" for="doc4">
+                                                    <strong>Beneficiary Information</strong> - Details of nominated beneficiaries
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Document Viewer -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h6>Document Viewer</h6>
+                                    <div class="document-viewer d-flex align-items-center justify-content-center">
+                                        <div class="text-center">
+                                            <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: #dc3545;"></i>
+                                            <p class="mt-2">Uploaded Document: <strong th:text="${application.submittedDocuments ?: 'document.pdf'}">document.pdf</strong></p>
+                                            <button class="btn btn-outline-primary mt-2">
+                                                <i class="bi bi-eye"></i> View Document
+                                            </button>
+                                            <button class="btn btn-outline-secondary mt-2 ms-2">
+                                                <i class="bi bi-download"></i> Download
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Review Notes -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h6>Review Notes</h6>
+                                    <div class="border p-3 bg-light">
+                                        <p th:text="${application.reviewNotes ?: 'No review notes yet'}">No review notes yet</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Actions Column -->
+                <div class="col-lg-4">
+                    <!-- Application Status -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Application Status</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <span class="badge status-badge" 
+                                  th:classappend="${application.status == 'SUBMITTED' ? 'bg-warning' : 
+                                    (application.status == 'APPROVED' ? 'bg-success' : 
+                                    (application.status == 'REJECTED' ? 'bg-danger' : 
+                                    (application.status == 'MISSING_INFO' ? 'bg-info' : 'bg-secondary')))}" 
+                                  th:text="${application.status}" style="font-size: 1.2em;">
+                                SUBMITTED
+                            </span>
+                            <p class="mt-2">Submitted on: <strong th:text="${#temporals.format(application.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</strong></p>
+                            <p>Last updated: <strong th:text="${#temporals.format(application.updatedAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</strong></p>
+                        </div>
+                    </div>
+
+                    <!-- Review Actions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Review Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="reviewForm" th:action="@{/api/sales/applications/{id}/review(id=${application.id})}" method="post">
+                                <input type="hidden" name="reviewedBy" th:value="${#authentication.name}">
+                                
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Action</label>
+                                    <select id="status" name="status" class="form-select" required>
+                                        <option value="">Select Action</option>
+                                        <option value="UNDER_REVIEW">Mark as Under Review</option>
+                                        <option value="MISSING_INFO">Request Additional Information</option>
+                                        <option value="APPROVED">Approve Application</option>
+                                        <option value="REJECTED">Reject Application</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3" id="notesSection" style="display: none;">
+                                    <label for="reviewNotes" class="form-label">Notes/Reason</label>
+                                    <textarea id="reviewNotes" name="reviewNotes" class="form-control" rows="4" 
+                                              placeholder="Enter detailed notes or reason for your decision..."></textarea>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                                    <a href="/sales-officer/applications-queue" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Application Timeline -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Application Timeline</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <small class="text-muted">2023-01-01 12:00</small>
+                                    <p class="mb-0"><strong>Application Submitted</strong></p>
+                                    <p class="text-muted mb-0">Application submitted by policy holder</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <small class="text-muted">2023-01-01 12:05</small>
+                                    <p class="mb-0"><strong>Queue Assignment</strong></p>
+                                    <p class="text-muted mb-0">Application added to sales officer queue</p>
+                                </div>
+                                <div class="timeline-item" th:if="${application.reviewedBy}">
+                                    <small class="text-muted" th:text="${#temporals.format(application.reviewedAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 13:00</small>
+                                    <p class="mb-0"><strong>Review Started</strong></p>
+                                    <p class="text-muted mb-0">Review initiated by <span th:text="${application.reviewedBy}">Sales Officer</span></p>
+                                </div>
+                                <div class="timeline-item" th:if="${application.status != 'SUBMITTED'}">
+                                    <small class="text-muted">Pending</small>
+                                    <p class="mb-0"><strong>Review Completed</strong></p>
+                                    <p class="text-muted mb-0">Application review status will be updated here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusSelect = document.getElementById('status');
+            const notesSection = document.getElementById('notesSection');
+            
+            statusSelect.addEventListener('change', function() {
+                const selectedValue = this.value;
+                
+                // Show notes field for MISSING_INFO, APPROVED, and REJECTED
+                if (selectedValue === 'MISSING_INFO' || selectedValue === 'APPROVED' || selectedValue === 'REJECTED') {
+                    notesSection.style.display = 'block';
+                } else {
+                    notesSection.style.display = 'none';
+                }
+            });
+            
+            // Document viewer functionality
+            const viewDocumentBtn = document.querySelector('.document-viewer .btn-outline-primary');
+            if (viewDocumentBtn) {
+                viewDocumentBtn.addEventListener('click', function() {
+                    // In a real application, this would open a PDF viewer modal
+                    alert('In a real application, this would open a PDF viewer for the uploaded document.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

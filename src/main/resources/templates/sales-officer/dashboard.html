@@ -41,6 +41,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white" href="/sales-officer/applications-queue">
+                        <i class="bi bi-list-task me-2"></i>Applications Queue
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white" href="/sales-officer/applications">
                         <i class="bi bi-file-earmark-text me-2"></i>Applications
                     </a>
@@ -81,6 +86,7 @@
                             <h5 class="card-title">Pending Applications</h5>
                             <h2 class="text-warning" th:text="${pendingCount}">0</h2>
                             <p class="text-muted">Applications awaiting review</p>
+                            <a href="/sales-officer/applications-queue" class="btn btn-sm btn-outline-warning">View Queue</a>
                         </div>
                     </div>
                 </div>
@@ -110,7 +116,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5>Recent Applications</h5>
-                            <a href="/sales-officer/applications" class="btn btn-primary btn-sm">View All</a>
+                            <a href="/sales-officer/applications-queue" class="btn btn-primary btn-sm">View All</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -140,7 +146,7 @@
                                             </td>
                                             <td th:text="${#temporals.format(application.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</td>
                                             <td>
-                                                <a th:href="@{/sales-officer/applications/{id}(id=${application.id})}" class="btn btn-sm btn-outline-primary">Review</a>
+                                                <a th:href="@{/sales-officer/application-review/{id}(id=${application.id})}" class="btn btn-sm btn-outline-primary">Review</a>
                                             </td>
                                         </tr>
                                         <tr th:if="${recentApplications.empty}">
