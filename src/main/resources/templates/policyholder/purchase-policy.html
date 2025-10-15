@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSure - Purchase Policy</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="brand-logo px-3 mb-4">
+                        <h4 class="text-white">MediSure</h4>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/dashboard}">
+                                <i class="bi bi-speedometer2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/policyholder/available-policies}">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Available Policies
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/policyholder/my-policies}">
+                                <i class="bi bi-folder"></i>
+                                My Policies
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/claims}">
+                                <i class="bi bi-cash"></i>
+                                Claims
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="sidebar-divider">
+                    
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="logoutBtn">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Purchase Policy</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <a href="/policyholder/available-policies" class="btn btn-sm btn-outline-secondary">Back to Policies</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="alertContainer"></div>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Policy Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Policy Name:</strong> <span id="policyName">-</span></p>
+                                        <p><strong>Policy Type:</strong> <span id="policyType">-</span></p>
+                                        <p><strong>Duration:</strong> <span id="policyDuration">-</span> months</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Coverage Amount:</strong> $<span id="coverageAmount">-</span></p>
+                                        <p><strong>Premium Amount:</strong> $<span id="premiumAmount">-</span></p>
+                                        <p><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5>Terms and Conditions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="termsContent">
+                                    <!-- Terms and conditions will be loaded here -->
+                                    <p>Loading terms and conditions...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Purchase Form</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="purchaseForm">
+                                    <input type="hidden" id="policyId" name="policyId">
+                                    
+                                    <div class="mb-3">
+                                        <label for="fullName" class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" id="fullName" name="fullName" required readonly>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email Address *</label>
+                                        <input type="email" class="form-control" id="email" name="email" required readonly>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" readonly>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="document" class="form-label">Required Documents</label>
+                                        <input type="file" class="form-control" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                        <div class="form-text">Upload any required documents (PDF, DOC, JPG, PNG)</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="additionalInfo" class="form-label">Additional Information</label>
+                                        <textarea class="form-control" id="additionalInfo" name="additionalInfo" rows="3" placeholder="Any additional information you'd like to provide..."></textarea>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                        <label class="form-check-label" for="agreeTerms">
+                                            I agree to the terms and conditions *
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Submit Purchase Request</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5>Next Steps</h5>
+                            </div>
+                            <div class="card-body">
+                                <ol>
+                                    <li>Submit your purchase request</li>
+                                    <li>A sales officer will review your application</li>
+                                    <li>You will receive a confirmation email</li>
+                                    <li>Policy activation after payment processing</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Purchase Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Purchase Request Submitted</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Your policy purchase request has been submitted successfully!</p>
+                    <p>A sales officer will contact you shortly to complete the process.</p>
+                    <p>Request ID: <strong id="requestId">-</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="viewPoliciesBtn">View My Policies</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Check if user is logged in
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            window.location.href = '/login';
+        }
+        
+        // Handle logout
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            window.location.href = '/login';
+        });
+        
+        // Get policy ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const policyId = urlParams.get('id');
+        
+        // Load policy data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            if (policyId) {
+                loadPolicyData(policyId);
+                loadUserData();
+            } else {
+                showAlert('Policy ID not specified', 'danger');
+            }
+        });
+        
+        // Load policy data from API
+        function loadPolicyData(id) {
+            fetch(`/api/policies/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to load policy data');
+                }
+            })
+            .then(policy => {
+                // Populate policy information
+                document.getElementById('policyId').value = policy.id;
+                document.getElementById('policyName').textContent = policy.name;
+                document.getElementById('policyType').textContent = policy.policyType;
+                document.getElementById('policyDuration').textContent = policy.duration;
+                document.getElementById('coverageAmount').textContent = policy.coverageAmount;
+                document.getElementById('premiumAmount').textContent = policy.premiumAmount;
+                
+                // Set terms content (in a real app, this would be HTML content)
+                document.getElementById('termsContent').innerHTML = policy.terms || 
+                    '<p class="text-muted">No terms and conditions available for this policy.</p>';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Failed to load policy data', 'danger');
+            });
+        }
+        
+        // Load user data from API (simplified - in a real app, you'd get this from the JWT token)
+        function loadUserData() {
+            // For demonstration purposes, we'll use placeholder data
+            // In a real implementation, you would extract this from the JWT token
+            document.getElementById('fullName').value = 'John Doe';
+            document.getElementById('email').value = 'john.doe@example.com';
+            document.getElementById('phoneNumber').value = '+1 (555) 123-4567';
+        }
+        
+        // Handle form submission
+        document.getElementById('purchaseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check if terms are agreed
+            if (!document.getElementById('agreeTerms').checked) {
+                showAlert('Please agree to the terms and conditions', 'warning');
+                return;
+            }
+            
+            // Get form data
+            const formData = new FormData();
+            formData.append('policyId', document.getElementById('policyId').value);
+            
+            const documentFile = document.getElementById('document').files[0];
+            if (documentFile) {
+                formData.append('document', documentFile);
+            }
+            
+            // Make API call to purchase policy
+            fetch('/api/policy-purchases/purchase', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Failed to submit purchase request');
+                }
+            })
+            .then(data => {
+                showAlert('Purchase request submitted successfully!', 'success');
+                // Show confirmation modal
+                document.getElementById('requestId').textContent = 'POL-' + Date.now();
+                const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                confirmationModal.show();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Failed to submit purchase request', 'danger');
+            });
+        });
+        
+        // View policies button in confirmation modal
+        document.getElementById('viewPoliciesBtn').addEventListener('click', function() {
+            window.location.href = '/policyholder/my-policies';
+        });
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            alertContainer.innerHTML = alertHtml;
+        }
+    </script>
+</body>
+</html>
