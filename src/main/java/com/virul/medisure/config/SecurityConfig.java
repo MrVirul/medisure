@@ -72,6 +72,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
                 .requestMatchers("/api/employees/**").hasRole("OPERATION_MANAGER")
                 .requestMatchers("/operation-manager/**").hasRole("OPERATION_MANAGER")
+                .requestMatchers("/api/policies/**").hasRole("POLICY_MANAGER")
+                .requestMatchers("/api/policy-purchases/**").hasRole("POLICY_MANAGER")
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(org.springframework.security.config.Customizer.withDefaults()))
