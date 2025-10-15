@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Applications - MediSure</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .status-submitted { background-color: #ffc107; }
+        .status-under-review { background-color: #17a2b8; }
+        .status-missing-info { background-color: #fd7e14; }
+        .status-approved { background-color: #28a745; }
+        .status-rejected { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar bg-dark text-white">
+        <div class="p-3">
+            <h4 class="text-center">MediSure</h4>
+            <hr class="text-secondary">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/sales-officer/dashboard">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white active" href="/sales-officer/applications">
+                        <i class="bi bi-file-earmark-text me-2"></i>Applications
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/sales-officer/reports">
+                        <i class="bi bi-bar-chart me-2"></i>Reports
+                    </a>
+                </li>
+                <li class="nav-item mt-5">
+                    <a class="nav-link text-white" href="/logout">
+                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <span class="navbar-brand">Policy Applications</span>
+                <div class="d-flex align-items-center">
+                    <span class="me-3">Welcome, <span th:text="${#authentication.name}">Sales Officer</span></span>
+                    <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Filter and Search -->
+        <div class="container mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Filter Applications</h5>
+                </div>
+                <div class="card-body">
+                    <form id="filterForm" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="statusFilter" class="form-label">Status</label>
+                            <select id="statusFilter" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="SUBMITTED">Submitted</option>
+                                <option value="UNDER_REVIEW">Under Review</option>
+                                <option value="MISSING_INFO">Missing Info</option>
+                                <option value="APPROVED">Approved</option>
+                                <option value="REJECTED">Rejected</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="dateFrom" class="form-label">From Date</label>
+                            <input type="date" id="dateFrom" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="dateTo" class="form-label">To Date</label>
+                            <input type="date" id="dateTo" class="form-control">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary me-2" id="applyFilter">Apply</button>
+                            <button type="button" class="btn btn-secondary" id="resetFilter">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Applications Table -->
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Policy Applications</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="applicationsTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Policy Holder</th>
+                                    <th>Policy</th>
+                                    <th>Status</th>
+                                    <th>Submitted Date</th>
+                                    <th>Last Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded via AJAX -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Review Application</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reviewForm">
+                        <input type="hidden" id="applicationId">
+                        <div class="mb-3">
+                            <label for="applicationDetails" class="form-label">Application Details</label>
+                            <div id="applicationDetails" class="border p-3 bg-light">
+                                <!-- Application details will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="statusSelect" class="form-label">Status</label>
+                            <select id="statusSelect" class="form-select" required>
+                                <option value="UNDER_REVIEW">Under Review</option>
+                                <option value="MISSING_INFO">Request Additional Information</option>
+                                <option value="APPROVED">Approve</option>
+                                <option value="REJECTED">Reject</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="notesSection">
+                            <label for="reviewNotes" class="form-label">Notes</label>
+                            <textarea id="reviewNotes" class="form-control" rows="3" placeholder="Enter notes/reason..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submitReview">Submit Review</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            var table = $('#applicationsTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "/api/sales/applications/pending",
+                    "type": "GET",
+                    "data": function(d) {
+                        // Add filter parameters
+                        d.status = $('#statusFilter').val();
+                        // Add date filters if needed
+                    }
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "policyHolderId" },
+                    { "data": "policyId" },
+                    { 
+                        "data": "status",
+                        "render": function(data, type, row) {
+                            var statusClass = 'status-' + data.toLowerCase().replace('_', '-');
+                            return '<span class="badge ' + statusClass + '">' + data + '</span>';
+                        }
+                    },
+                    { 
+                        "data": "createdAt",
+                        "render": function(data, type, row) {
+                            if (type === 'display' && data) {
+                                return new Date(data).toLocaleDateString();
+                            }
+                            return data;
+                        }
+                    },
+                    { 
+                        "data": "updatedAt",
+                        "render": function(data, type, row) {
+                            if (type === 'display' && data) {
+                                return new Date(data).toLocaleDateString();
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": null,
+                        "render": function(data, type, row) {
+                            return '<button class="btn btn-sm btn-primary review-btn" data-id="' + row.id + '">Review</button>';
+                        }
+                    }
+                ]
+            });
+
+            // Apply filter
+            $('#applyFilter').click(function() {
+                table.ajax.reload();
+            });
+
+            // Reset filter
+            $('#resetFilter').click(function() {
+                $('#filterForm')[0].reset();
+                table.ajax.reload();
+            });
+
+            // Handle review button click
+            $(document).on('click', '.review-btn', function() {
+                var applicationId = $(this).data('id');
+                loadApplicationDetails(applicationId);
+                $('#applicationId').val(applicationId);
+                $('#reviewModal').modal('show');
+            });
+
+            // Handle status change
+            $('#statusSelect').change(function() {
+                var status = $(this).val();
+                if (status === 'UNDER_REVIEW') {
+                    $('#notesSection').hide();
+                } else {
+                    $('#notesSection').show();
+                }
+            });
+
+            // Submit review
+            $('#submitReview').click(function() {
+                var applicationId = $('#applicationId').val();
+                var status = $('#statusSelect').val();
+                var notes = $('#reviewNotes').val();
+                var reviewer = /*[[${#authentication.name}]]*/ 'Sales Officer';
+
+                var reviewData = {
+                    status: status,
+                    reviewNotes: notes,
+                    reviewedBy: reviewer
+                };
+
+                $.ajax({
+                    url: '/api/sales/applications/' + applicationId + '/review',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(reviewData),
+                    success: function(response) {
+                        $('#reviewModal').modal('hide');
+                        table.ajax.reload();
+                        alert('Application reviewed successfully!');
+                    },
+                    error: function(xhr) {
+                        alert('Error reviewing application: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            // Load application details
+            function loadApplicationDetails(id) {
+                $.get('/api/sales/applications/' + id, function(data) {
+                    var detailsHtml = '<p><strong>Policy Holder ID:</strong> ' + data.policyHolderId + '</p>' +
+                                      '<p><strong>Policy ID:</strong> ' + data.policyId + '</p>' +
+                                      '<p><strong>Submitted Documents:</strong> ' + (data.submittedDocuments || 'None') + '</p>' +
+                                      '<p><strong>Status:</strong> ' + data.status + '</p>';
+                    $('#applicationDetails').html(detailsHtml);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
