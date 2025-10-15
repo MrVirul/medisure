@@ -13,7 +13,7 @@ if check_port 8080; then
     echo "⚠️  Port 8080 is already in use. Backend might already be running."
 else
     echo "📦 Starting Spring Boot backend..."
-    cd "/Users/virul/My Projects/medisure"
+    cd "/Users/virul/My Projects/MediSure"
     ./mvnw spring-boot:run &
     BACKEND_PID=$!
     echo "Backend started with PID: $BACKEND_PID"
@@ -24,7 +24,7 @@ if check_port 5173; then
     echo "⚠️  Port 5173 is already in use. Frontend might already be running."
 else
     echo "⚛️  Starting React frontend..."
-    cd "/Users/virul/My Projects/medisure/frontend"
+    cd "/Users/virul/My Projects/MediSure/frontend"
     npm run dev &
     FRONTEND_PID=$!
     echo "Frontend started with PID: $FRONTEND_PID"
