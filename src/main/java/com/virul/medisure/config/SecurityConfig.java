@@ -66,9 +66,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
+                .requestMatchers("/api/employees/**").hasRole("OPERATION_MANAGER")
+                .requestMatchers("/operation-manager/**").hasRole("OPERATION_MANAGER")
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(org.springframework.security.config.Customizer.withDefaults()))
