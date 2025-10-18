@@ -48,3 +48,4 @@ frontend/pnpm-debug.log*
 
 ### macOS ###
 .DS_Store
+app.log
