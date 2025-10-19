@@ -1,6 +1,6 @@
-# Medisur Health Insurance Management System - Frontend
+# Medisure Health Insurance Management System - Frontend
 
-A modern, responsive React frontend for the Medisur Health Insurance Management System built with Vite, React Router, TailwindCSS, and Axios.
+A modern, responsive React frontend for the Medisure Health Insurance Management System built with Vite, React Router, TailwindCSS, and Axios.
 
 ## 🚀 Features
 
@@ -63,7 +63,7 @@ A modern, responsive React frontend for the Medisur Health Insurance Management 
 
 ```bash
 # Navigate to frontend directory
-cd medisur-frontend
+cd frontend
 
 # Install dependencies
 npm install
@@ -95,7 +95,7 @@ Vite is configured to run on port **5173** (default). The backend CORS is config
 ## 📁 Project Structure
 
 ```
-medisur-frontend/
+frontend/
 ├── src/
 │   ├── components/          # Reusable UI components
 │   │   ├── common/          # Common components (Button, Card, Input, etc.)

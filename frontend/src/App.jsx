@@ -23,6 +23,7 @@ import SubmitClaim from './pages/claims/SubmitClaim';
 import MyClaims from './pages/claims/MyClaims';
 import BookAppointment from './pages/appointments/BookAppointment';
 import MyAppointments from './pages/appointments/MyAppointments';
+import TestAuth from './pages/auth/TestAuth';
 
 // Dynamic Dashboard Router
 const DashboardRouter = () => {
@@ -64,6 +65,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/test-auth" element={<TestAuth />} />
           
           {/* Protected Dashboard */}
           <Route path="/dashboard" element={
