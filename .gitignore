@@ -32,9 +32,35 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/resources/env.properties
+### Sensitive Configuration Files ###
+# Environment and configuration files
+.env
+.env.*
+*.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
 
-### Frontend (Vite/Node) ###
+# Application properties with sensitive data
+src/main/resources/application.properties
+src/main/resources/application-*.properties
+src/main/resources/env.properties
+src/main/resources/config.properties
+
+# Database configuration
+database.properties
+db.properties
+datasource.properties
+
+# Logs and temporary files
+*.log
+logs/
+app.log
+application.log
+
+# Frontend (Vite/Node) ###
 frontend/node_modules/
 frontend/dist/
 frontend/.cache/
@@ -48,4 +74,14 @@ frontend/pnpm-debug.log*
 
 ### macOS ###
 .DS_Store
-app.log
+
+### Security ###
+# API Keys and secrets
+secrets.properties
+api-keys.properties
+credentials.properties
+
+# Backup files
+*.bak
+*.backup
+*.tmp

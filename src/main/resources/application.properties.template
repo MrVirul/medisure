@@ -31,7 +31,7 @@ spring.datasource.hikari.connection-timeout=30000
 # ===========================================
 # JWT Configuration
 # ===========================================
-jwt.secret=medisurSecretKeyForHS512Algorithm1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
+jwt.secret=YOUR_JWT_SECRET_KEY_HERE
 jwt.expiration=86400000
 jwt.refresh-expiration=604800000
 
