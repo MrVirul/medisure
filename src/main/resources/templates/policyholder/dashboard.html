@@ -139,13 +139,11 @@
                     <div class="grid grid-cols-2 gap-4 mb-3">
                         <div>
                             <p class="text-xs text-slate-500">Coverage Amount</p>
-                            <!-- Fixed: Using locale-aware formatting (minIntegerDigits=1, minDecimalDigits=0, locale='en') -->
-                            <p class="text-sm font-semibold text-slate-900" th:text="'$' + ${#numbers.formatDecimal(myPolicy.coverageAmount, 1, 0, 'en')}">$0</p>
+                            <p class="text-sm font-semibold text-slate-900" th:text="'$' + ${#numbers.formatDecimal(myPolicy.coverageAmount, 1, 0)}">$0</p>
                         </div>
                         <div>
                             <p class="text-xs text-slate-500">Premium</p>
-                            <!-- Fixed: Using locale-aware formatting (minIntegerDigits=1, minDecimalDigits=0, locale='en') -->
-                            <p class="text-sm font-semibold text-slate-900" th:text="'$' + ${#numbers.formatDecimal(myPolicy.premiumAmount, 1, 0, 'en')} + '/month'">$0/month</p>
+                            <p class="text-sm font-semibold text-slate-900" th:text="'$' + ${#numbers.formatDecimal(myPolicy.premiumAmount, 1, 0)} + '/month'">$0/month</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-3">
@@ -339,8 +337,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="text-sm text-slate-700" th:text="${claim.hospitalName ?: 'N/A'}">Hospital</span>
                         </td>
-                        <!-- Fixed: Using locale-aware formatting (minIntegerDigits=1, minDecimalDigits=2, locale='en') for claim amounts with decimals -->
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900" th:text="'$' + ${#numbers.formatDecimal(claim.amountClaimed, 1, 2, 'en')}">$0.00</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900" th:text="'$' + ${#numbers.formatDecimal(claim.amountClaimed, 1, 2)}">$0.00</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700" th:text="${#temporals.format(claim.createdAt, 'MMM dd, yyyy')}">Date</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span th:classappend="${claim.status.toString() == 'SUBMITTED' ? 'text-blue-700 bg-blue-100' :
