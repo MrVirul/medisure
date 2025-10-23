@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>Pending Policy Approvals - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Pending Policy Approvals</h1>
+            <p class="text-slate-600">Review and approve new policy purchases</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="loadPendingPolicies()" 
+                    class="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition font-medium">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Refresh
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Loading State -->
+    <div id="loadingState" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <p class="mt-4 text-slate-600">Loading pending approvals...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="hidden">
+        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <div class="flex items-start">
+                <svg class="w-6 h-6 text-red-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-red-900 mb-1">Unable to Load Pending Approvals</h3>
+                    <p id="errorMessage" class="text-red-700"></p>
+                    <button onclick="loadPendingPolicies()" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Container -->
+    <div id="contentContainer" class="hidden">
+        
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-900 mb-1" id="totalPending">0</div>
+                <div class="text-sm text-slate-600">Total Pending</div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-900 mb-1" id="policyManagerApproved">0</div>
+                <div class="text-sm text-slate-600">Policy Manager Approved</div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-900 mb-1" id="financeOfficerApproved">0</div>
+                <div class="text-sm text-slate-600">Finance Officer Approved</div>
+            </div>
+        </div>
+
+        <!-- Pending Policies Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <div class="p-6 border-b border-slate-200">
+                <h2 class="text-xl font-bold text-slate-900">Pending Policy Approvals</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Policy Holder</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Policy</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Premium</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Coverage</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Purchase Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Approvals</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingPoliciesTableBody" class="bg-white divide-y divide-slate-200">
+                        <!-- Rows will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden p-12 text-center">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">No Pending Approvals</h3>
+                <p class="text-slate-600">All policies have been approved or there are no pending purchases.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- JavaScript -->
+<div layout:fragment="scripts">
+<script th:inline="javascript">
+    let pendingPolicies = [];
+    let currentUserRole = null;
+
+    // Load pending policies on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get current user role from authentication
+        fetch('/api/policy-holder/current-user')
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success' && result.data) {
+                    currentUserRole = result.data.role;
+                }
+                loadPendingPolicies();
+            })
+            .catch(error => {
+                console.error('Error fetching user info:', error);
+                loadPendingPolicies();
+            });
+    });
+
+    // Load all pending approval policies
+    async function loadPendingPolicies() {
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const contentContainer = document.getElementById('contentContainer');
+
+        try {
+            loadingState.classList.remove('hidden');
+            errorState.classList.add('hidden');
+            contentContainer.classList.add('hidden');
+
+            const response = await fetch('/api/policy-holder/pending-approval', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success' && result.data) {
+                pendingPolicies = result.data;
+                displayPendingPolicies();
+                updateStatistics();
+                
+                loadingState.classList.add('hidden');
+                contentContainer.classList.remove('hidden');
+            } else {
+                throw new Error(result.message || 'Failed to load pending approvals');
+            }
+        } catch (error) {
+            console.error('Error loading pending approvals:', error);
+            loadingState.classList.add('hidden');
+            errorState.classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = error.message;
+        }
+    }
+
+    // Update statistics
+    function updateStatistics() {
+        document.getElementById('totalPending').textContent = pendingPolicies.length;
+        
+        const policyManagerApproved = pendingPolicies.filter(p => p.policyManagerApproved).length;
+        document.getElementById('policyManagerApproved').textContent = policyManagerApproved;
+        
+        const financeOfficerApproved = pendingPolicies.filter(p => p.financeOfficerApproved).length;
+        document.getElementById('financeOfficerApproved').textContent = financeOfficerApproved;
+    }
+
+    // Display pending policies in table
+    function displayPendingPolicies() {
+        const tableBody = document.getElementById('pendingPoliciesTableBody');
+        const emptyState = document.getElementById('emptyState');
+        
+        if (pendingPolicies.length === 0) {
+            tableBody.innerHTML = '';
+            emptyState.classList.remove('hidden');
+            return;
+        }
+        
+        emptyState.classList.add('hidden');
+        tableBody.innerHTML = pendingPolicies.map(policyHolder => createTableRow(policyHolder)).join('');
+    }
+
+    // Create table row HTML
+    function createTableRow(policyHolder) {
+        const policy = policyHolder.policy;
+        const user = policyHolder.user;
+        const createdDate = new Date(policyHolder.createdAt).toLocaleDateString();
+        
+        const policyManagerApproved = policyHolder.policyManagerApproved;
+        const financeOfficerApproved = policyHolder.financeOfficerApproved;
+        
+        const canApprovePolicyManager = currentUserRole === 'POLICY_MANAGER' || currentUserRole === 'ADMIN';
+        const canApproveFinance = currentUserRole === 'FINANCE_MANAGER' || currentUserRole === 'ADMIN';
+        
+        return `
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
+                            <span class="text-primary-700 font-semibold">${user.fullName.charAt(0)}</span>
+                        </div>
+                        <div class="ml-4">
+                            <div class="text-sm font-medium text-slate-900">${user.fullName}</div>
+                            <div class="text-sm text-slate-500">${user.email}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-slate-900">${policy.name}</div>
+                    <div class="text-sm text-slate-500">${policy.type}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-slate-900">$${policy.premiumAmount.toLocaleString()}/mo</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-slate-900">$${policy.coverageAmount.toLocaleString()}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-slate-900">${createdDate}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center">
+                            ${policyManagerApproved 
+                                ? '<svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-sm text-green-700">Policy Manager</span>'
+                                : '<svg class="w-5 h-5 text-slate-400 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd"/></svg><span class="text-sm text-slate-500">Policy Manager</span>'}
+                        </div>
+                        <div class="flex items-center">
+                            ${financeOfficerApproved 
+                                ? '<svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-sm text-green-700">Finance Officer</span>'
+                                : '<svg class="w-5 h-5 text-slate-400 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd"/></svg><span class="text-sm text-slate-500">Finance Officer</span>'}
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <div class="flex flex-col gap-2">
+                        ${!policyManagerApproved && canApprovePolicyManager
+                            ? `<button onclick="approveByPolicyManager(${policyHolder.id})" 
+                                       class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs font-medium">
+                                    Approve (PM)
+                                </button>`
+                            : policyManagerApproved
+                                ? '<span class="text-xs text-green-600">✓ Approved</span>'
+                                : '<span class="text-xs text-slate-400">N/A</span>'}
+                        ${!financeOfficerApproved && canApproveFinance
+                            ? `<button onclick="approveByFinanceOfficer(${policyHolder.id})" 
+                                       class="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-xs font-medium">
+                                    Approve (FO)
+                                </button>`
+                            : financeOfficerApproved
+                                ? '<span class="text-xs text-green-600">✓ Approved</span>'
+                                : '<span class="text-xs text-slate-400">N/A</span>'}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    // Approve by Policy Manager
+    async function approveByPolicyManager(policyHolderId) {
+        if (!confirm('Are you sure you want to approve this policy as Policy Manager?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/policy-holder/${policyHolderId}/approve-policy-manager`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                window.showToast('Policy approved by Policy Manager successfully!', 'success');
+                loadPendingPolicies(); // Reload the list
+            } else {
+                throw new Error(result.message || 'Failed to approve policy');
+            }
+        } catch (error) {
+            console.error('Error approving policy:', error);
+            window.showToast(error.message, 'error');
+        }
+    }
+
+    // Approve by Finance Officer
+    async function approveByFinanceOfficer(policyHolderId) {
+        if (!confirm('Are you sure you want to approve this policy as Finance Officer?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/policy-holder/${policyHolderId}/approve-finance-officer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                window.showToast('Policy approved by Finance Officer successfully!', 'success');
+                loadPendingPolicies(); // Reload the list
+            } else {
+                throw new Error(result.message || 'Failed to approve policy');
+            }
+        } catch (error) {
+            console.error('Error approving policy:', error);
+            window.showToast(error.message, 'error');
+        }
+    }
+</script>
+</div>
+
+</body>
+</html>
+

@@ -324,5 +324,15 @@ public class DashboardController {
         
         return "agent/dashboard";
     }
+    
+    /**
+     * Pending Policy Approvals Page
+     */
+    @GetMapping("/admin/pending-approvals")
+    public String pendingApprovalsPage(Model model, HttpServletRequest request) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Pending Policy Approvals");
+        return "admin/pending-approvals";
+    }
 }
 

@@ -40,6 +40,24 @@ public class PolicyHolder {
     @Column(name = "policy_document_url")
     private String policyDocumentUrl;
     
+    @Column(name = "policy_manager_approved")
+    private Boolean policyManagerApproved = false;
+    
+    @Column(name = "policy_manager_approved_by")
+    private String policyManagerApprovedBy;
+    
+    @Column(name = "policy_manager_approved_at")
+    private LocalDateTime policyManagerApprovedAt;
+    
+    @Column(name = "finance_officer_approved")
+    private Boolean financeOfficerApproved = false;
+    
+    @Column(name = "finance_officer_approved_by")
+    private String financeOfficerApprovedBy;
+    
+    @Column(name = "finance_officer_approved_at")
+    private LocalDateTime financeOfficerApprovedAt;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
     
@@ -47,6 +65,7 @@ public class PolicyHolder {
     private LocalDateTime updatedAt = LocalDateTime.now();
     
     public enum PolicyStatus {
+        PENDING_APPROVAL,
         ACTIVE,
         EXPIRED,
         CANCELLED,

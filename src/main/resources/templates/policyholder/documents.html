@@ -11,34 +11,316 @@
 <div layout:fragment="page-header" class="mb-8">
     <div>
         <h1 class="text-3xl font-bold text-slate-900 mb-2">My Documents</h1>
-        <p class="text-slate-600">Access your policy documents and medical records</p>
+        <p class="text-slate-600">Access and download your policy documents</p>
     </div>
 </div>
 
 <!-- Main Content -->
 <div layout:fragment="content">
     
-    <!-- Empty State -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
-        <div class="text-center max-w-md mx-auto">
-            <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/>
-                </svg>
+    <!-- Loading State -->
+    <div id="loadingState" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <p class="mt-4 text-slate-600">Loading documents...</p>
+    </div>
+
+    <!-- Documents Section -->
+    <div id="documentsSection" class="hidden">
+        
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-slate-600 text-sm mb-1">Total Documents</p>
+                        <p class="text-3xl font-bold text-slate-900" id="totalDocuments">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                </div>
             </div>
-            <h2 class="text-2xl font-bold text-slate-900 mb-3">No Documents Available</h2>
-            <p class="text-slate-600 mb-6">
-                You don't have any documents yet. Your policy documents, claim receipts, and medical records will appear here.
-            </p>
-            <a href="/policyholder/dashboard" 
-               class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">
-                Back to Dashboard
-            </a>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-slate-600 text-sm mb-1">Policy Certificates</p>
+                        <p class="text-3xl font-bold text-slate-900" id="policyCertificates">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-slate-600 text-sm mb-1">Other Documents</p>
+                        <p class="text-3xl font-bold text-slate-900" id="otherDocuments">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 border-b border-slate-200">
+                <h2 class="text-xl font-bold text-slate-900">All Documents</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Document Name</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Size</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Uploaded</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="documentsTableBody" class="divide-y divide-slate-200">
+                        <!-- Documents will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
+            <div class="text-center max-w-md mx-auto">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-3">No Documents Available</h2>
+                <p class="text-slate-600 mb-6">
+                    You don't have any documents yet. Your policy documents will appear here after you purchase a policy.
+                </p>
+                <div class="flex gap-3 justify-center">
+                    <a href="/policyholder/policies/buy" 
+                       class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                        Browse Policies
+                    </a>
+                    <a href="/policyholder/dashboard" 
+                       class="inline-flex items-center px-6 py-3 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition font-medium">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     
 </div>
 
+<!-- JavaScript -->
+<div layout:fragment="scripts">
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDocuments();
+    });
+
+    async function loadDocuments() {
+        const loadingState = document.getElementById('loadingState');
+        const documentsSection = document.getElementById('documentsSection');
+        const emptyState = document.getElementById('emptyState');
+
+        try {
+            const response = await fetch('/api/policy-holder/my-documents', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            loadingState.classList.add('hidden');
+
+            if (result.success && result.data && result.data.length > 0) {
+                displayDocuments(result.data);
+                documentsSection.classList.remove('hidden');
+            } else {
+                emptyState.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Error loading documents:', error);
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+        }
+    }
+
+    function displayDocuments(documents) {
+        // Update statistics
+        document.getElementById('totalDocuments').textContent = documents.length;
+        
+        const policyCertCount = documents.filter(doc => doc.documentType === 'POLICY_CERTIFICATE').length;
+        document.getElementById('policyCertificates').textContent = policyCertCount;
+        document.getElementById('otherDocuments').textContent = documents.length - policyCertCount;
+
+        // Populate table
+        const tableBody = document.getElementById('documentsTableBody');
+        tableBody.innerHTML = '';
+
+        documents.forEach(doc => {
+            const row = createDocumentRow(doc);
+            tableBody.appendChild(row);
+        });
+    }
+
+    function createDocumentRow(doc) {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50 transition';
+
+        row.innerHTML = `
+            <td class="px-6 py-4">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-slate-900">${doc.fileName}</div>
+                        <div class="text-sm text-slate-500">${doc.description || 'No description'}</div>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDocumentTypeColor(doc.documentType)}">
+                    ${formatDocumentType(doc.documentType)}
+                </span>
+            </td>
+            <td class="px-6 py-4 text-sm text-slate-600">
+                ${formatFileSize(doc.fileSize)}
+            </td>
+            <td class="px-6 py-4 text-sm text-slate-600">
+                ${formatDate(doc.uploadedAt)}
+            </td>
+            <td class="px-6 py-4">
+                <button onclick="downloadDocument(${doc.id}, '${doc.fileName}')" 
+                        class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Download
+                </button>
+            </td>
+        `;
+
+        return row;
+    }
+
+    function getDocumentTypeColor(type) {
+        const colors = {
+            'POLICY_CERTIFICATE': 'bg-green-100 text-green-800',
+            'POLICY_TERMS': 'bg-blue-100 text-blue-800',
+            'PAYMENT_RECEIPT': 'bg-purple-100 text-purple-800',
+            'RENEWAL_NOTICE': 'bg-yellow-100 text-yellow-800',
+            'CLAIM_DOCUMENT': 'bg-orange-100 text-orange-800',
+            'OTHER': 'bg-gray-100 text-gray-800'
+        };
+        return colors[type] || colors['OTHER'];
+    }
+
+    function formatDocumentType(type) {
+        return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    function formatFileSize(bytes) {
+        if (!bytes) return 'Unknown';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    async function downloadDocument(documentId, fileName) {
+        try {
+            const response = await fetch(`/api/policy-holder/documents/${documentId}/download`, {
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                showAlert('success', 'Document downloaded successfully!');
+            } else {
+                showAlert('error', 'Failed to download document. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error downloading document:', error);
+            showAlert('error', 'An error occurred while downloading the document.');
+        }
+    }
+
+    function showAlert(type, message) {
+        const alertColors = {
+            'success': 'bg-green-50 border-green-200 text-green-800',
+            'error': 'bg-red-50 border-red-200 text-red-800'
+        };
+        
+        const iconPaths = {
+            'success': 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+            'error': 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
+        };
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `fixed top-4 right-4 z-50 flex items-center gap-3 ${alertColors[type]} border px-6 py-4 rounded-lg shadow-lg max-w-md`;
+        alertDiv.innerHTML = `
+            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPaths[type]}"/>
+            </svg>
+            <p class="font-medium">${message}</p>
+            <button onclick="this.parentElement.remove()" class="ml-2 flex-shrink-0 hover:opacity-75">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+</script>
+</div>
+
 </body>
 </html>
-
