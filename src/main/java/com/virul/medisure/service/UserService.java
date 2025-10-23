@@ -29,13 +29,22 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
+        
+        // Validate password confirmation
+        if (request.getConfirmPassword() != null && 
+            !request.getPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
 
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhone(request.getPhone());
-        user.setRole(User.UserRole.USER);
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setAddress(request.getAddress());
+        // New users should be policy holders by default
+        user.setRole(User.UserRole.POLICY_HOLDER);
 
         return userRepository.save(user);
     }

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>Admin Dashboard - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Admin Dashboard</h1>
+            <p class="text-slate-600">Welcome back! Here's what's happening with your insurance platform today.</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex gap-3">
+            <button onclick="window.location.reload()" 
+                    class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Refresh
+            </button>
+            <button class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Export Report
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Key Metrics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        
+        <!-- Total Policies Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition"
+             hx-get="/api/admin/stats/total-policies"
+             hx-trigger="load"
+             hx-swap="innerHTML"
+             hx-target="#total-policies-value">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">+12.5%</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-slate-600 mb-1">Total Policies</p>
+                <p id="total-policies-value" class="text-3xl font-bold text-slate-900">
+                    <span class="htmx-indicator inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></span>
+                    <span th:text="${totalPolicies != null ? totalPolicies : '1,234'}">1,234</span>
+                </p>
+                <p class="text-xs text-slate-500 mt-2">Active insurance policies</p>
+            </div>
+        </div>
+        
+        <!-- Active Claims Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">Pending</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-slate-600 mb-1">Active Claims</p>
+                <p class="text-3xl font-bold text-slate-900" th:text="${activeClaims != null ? activeClaims : '87'}">87</p>
+                <p class="text-xs text-slate-500 mt-2">Awaiting review</p>
+            </div>
+        </div>
+        
+        <!-- Pending Approvals Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">Action Needed</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-slate-600 mb-1">Pending Approvals</p>
+                <p class="text-3xl font-bold text-slate-900" th:text="${pendingApprovals != null ? pendingApprovals : '23'}">23</p>
+                <p class="text-xs text-slate-500 mt-2">Require your attention</p>
+            </div>
+        </div>
+        
+        <!-- Monthly Revenue Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">+8.2%</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-slate-600 mb-1">Monthly Revenue</p>
+                <p class="text-3xl font-bold text-slate-900" th:text="${monthlyRevenue != null ? '$' + monthlyRevenue : '$245,890'}">$245,890</p>
+                <p class="text-xs text-slate-500 mt-2">vs. last month</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts and Data Visualization -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        
+        <!-- Claims Overview Chart -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-slate-900">Claims Overview</h3>
+                <select class="text-sm border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option>Last 7 days</option>
+                    <option>Last 30 days</option>
+                    <option>Last 3 months</option>
+                    <option>Last year</option>
+                </select>
+            </div>
+            <div class="h-64">
+                <canvas id="claimsChart"></canvas>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-200">
+                <div class="text-center">
+                    <p class="text-sm text-slate-600 mb-1">Approved</p>
+                    <p class="text-xl font-bold text-green-600">142</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-slate-600 mb-1">Pending</p>
+                    <p class="text-xl font-bold text-amber-600">87</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-slate-600 mb-1">Rejected</p>
+                    <p class="text-xl font-bold text-red-600">15</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Policy Distribution Chart -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-slate-900">Policy Distribution</h3>
+                <button class="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</button>
+            </div>
+            <div class="h-64 flex items-center justify-center">
+                <canvas id="policyChart"></canvas>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <div>
+                        <p class="text-sm text-slate-600">Individual</p>
+                        <p class="text-lg font-semibold text-slate-900">45%</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <div>
+                        <p class="text-sm text-slate-600">Family</p>
+                        <p class="text-lg font-semibold text-slate-900">35%</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    <div>
+                        <p class="text-sm text-slate-600">Corporate</p>
+                        <p class="text-lg font-semibold text-slate-900">15%</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                    <div>
+                        <p class="text-sm text-slate-600">Senior</p>
+                        <p class="text-lg font-semibold text-slate-900">5%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Data Tables -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Recent Claims -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-900">Recent Claims</h3>
+                <a href="/admin/claims" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Claim ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Patient</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200" 
+                           hx-get="/api/admin/recent-claims"
+                           hx-trigger="load"
+                           hx-swap="innerHTML">
+                        <!-- Sample Data - Will be replaced by HTMX -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#CLM-001</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">John Doe</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">$1,250</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">Pending</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#CLM-002</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Jane Smith</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">$3,450</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Approved</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#CLM-003</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Bob Johnson</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">$890</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">Pending</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Upcoming Appointments -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-900">Upcoming Appointments</h3>
+                <a href="/admin/appointments" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</a>
+            </div>
+            <div class="p-6 space-y-4">
+                <!-- Sample Appointments -->
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex flex-col items-center justify-center">
+                            <span class="text-xs font-semibold text-primary-600">MAR</span>
+                            <span class="text-lg font-bold text-primary-700">15</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-slate-900">Dr. Sarah Wilson</p>
+                        <p class="text-sm text-slate-600">General Checkup - John Doe</p>
+                        <p class="text-xs text-slate-500 mt-1">10:00 AM - 10:30 AM</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">Confirmed</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex flex-col items-center justify-center">
+                            <span class="text-xs font-semibold text-primary-600">MAR</span>
+                            <span class="text-lg font-bold text-primary-700">15</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-slate-900">Dr. Michael Chen</p>
+                        <p class="text-sm text-slate-600">Cardiology - Jane Smith</p>
+                        <p class="text-xs text-slate-500 mt-1">2:00 PM - 3:00 PM</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="px-2 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">Pending</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex flex-col items-center justify-center">
+                            <span class="text-xs font-semibold text-primary-600">MAR</span>
+                            <span class="text-lg font-bold text-primary-700">16</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-slate-900">Dr. Emily Brown</p>
+                        <p class="text-sm text-slate-600">Dental Checkup - Bob Johnson</p>
+                        <p class="text-xs text-slate-500 mt-1">11:00 AM - 11:45 AM</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">Confirmed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="mt-8 bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl shadow-lg p-8 text-white">
+        <h3 class="text-2xl font-bold mb-6">Quick Actions</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="/admin/policies/new" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold">New Policy</p>
+                    <p class="text-xs text-white/80">Create policy</p>
+                </div>
+            </a>
+            
+            <a href="/admin/users/new" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold">Add User</p>
+                    <p class="text-xs text-white/80">Register new user</p>
+                </div>
+            </a>
+            
+            <a href="/admin/claims" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold">Review Claims</p>
+                    <p class="text-xs text-white/80">23 pending</p>
+                </div>
+            </a>
+            
+            <a href="/admin/reports" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold">View Reports</p>
+                    <p class="text-xs text-white/80">Analytics</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Page-specific Scripts -->
+<th:block layout:fragment="scripts">
+    <script>
+        // Claims Overview Chart
+        const claimsCtx = document.getElementById('claimsChart');
+        if (claimsCtx) {
+            new Chart(claimsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Claims Submitted',
+                        data: [12, 19, 15, 25, 22, 18, 24],
+                        borderColor: 'rgb(37, 99, 235)',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Policy Distribution Chart
+        const policyCtx = document.getElementById('policyChart');
+        if (policyCtx) {
+            new Chart(policyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Individual', 'Family', 'Corporate', 'Senior'],
+                    datasets: [{
+                        data: [45, 35, 15, 5],
+                        backgroundColor: [
+                            'rgb(59, 130, 246)',
+                            'rgb(34, 197, 94)',
+                            'rgb(168, 85, 247)',
+                            'rgb(251, 146, 60)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</th:block>
+
+</body>
+</html>
+

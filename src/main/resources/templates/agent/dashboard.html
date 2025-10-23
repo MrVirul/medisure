@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>Agent Dashboard - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Agent Dashboard</h1>
+            <p class="text-slate-600">Track your sales performance and manage client relationships</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <button onclick="window.location.href='/agent/leads/new'" 
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-primary-700 shadow-lg shadow-primary-500/30">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                </svg>
+                Add New Lead
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold bg-white/20 rounded-full">Active</span>
+            </div>
+            <p class="text-sm text-white/80 mb-1">My Clients</p>
+            <p class="text-3xl font-bold">48</p>
+            <p class="text-xs text-white/60 mt-2">Total active policies</p>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">+12%</span>
+            </div>
+            <p class="text-sm font-medium text-slate-600 mb-1">This Month</p>
+            <p class="text-3xl font-bold text-green-600">$4,250</p>
+            <p class="text-xs text-slate-500 mt-2">Commission earned</p>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm font-medium text-slate-600 mb-1">Active Leads</p>
+            <p class="text-3xl font-bold text-slate-900">15</p>
+            <p class="text-xs text-slate-500 mt-2">Require follow-up</p>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm font-medium text-slate-600 mb-1">Renewals Due</p>
+            <p class="text-3xl font-bold text-purple-600">7</p>
+            <p class="text-xs text-slate-500 mt-2">Next 30 days</p>
+        </div>
+    </div>
+    
+    <!-- Performance Chart and Top Clients -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        
+        <!-- Sales Performance -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-slate-900">Sales Performance</h3>
+                <select class="text-sm border-slate-300 rounded-lg">
+                    <option>Last 6 months</option>
+                    <option>Last year</option>
+                    <option>All time</option>
+                </select>
+            </div>
+            <div class="h-64">
+                <canvas id="salesChart"></canvas>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-200">
+                <div class="text-center">
+                    <p class="text-sm text-slate-600 mb-1">Policies Sold</p>
+                    <p class="text-xl font-bold text-blue-600">12</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-slate-600 mb-1">Renewals</p>
+                    <p class="text-xl font-bold text-green-600">8</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-slate-600 mb-1">Commission</p>
+                    <p class="text-xl font-bold text-purple-600">$4.2K</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Clients -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-900">Top Clients</h3>
+                <a href="/agent/clients" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</a>
+            </div>
+            <div class="p-6 space-y-4">
+                
+                <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        JD
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-slate-900">John Doe</h4>
+                        <p class="text-sm text-slate-600">3 Policies • $425/month</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-green-600">$102</p>
+                        <p class="text-xs text-slate-500">Commission</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        JS
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-slate-900">Jane Smith</h4>
+                        <p class="text-sm text-slate-600">2 Policies • $250/month</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-green-600">$60</p>
+                        <p class="text-xs text-slate-500">Commission</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        MC
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-slate-900">Michael Chen</h4>
+                        <p class="text-sm text-slate-600">1 Policy • $125/month</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-green-600">$30</p>
+                        <p class="text-xs text-slate-500">Commission</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Leads and Upcoming Renewals -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Recent Leads -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-900">Recent Leads</h3>
+                <a href="/agent/leads" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</a>
+            </div>
+            <div class="divide-y divide-slate-200">
+                
+                <div class="p-6 hover:bg-slate-50 transition">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h4 class="font-semibold text-slate-900">Sarah Williams</h4>
+                            <p class="text-sm text-slate-600">Looking for family coverage</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Hot</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-slate-600 mb-3">
+                        <span>📧 sarah.w@email.com</span>
+                        <span>📞 (555) 123-4567</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-3 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700">
+                            Contact
+                        </button>
+                        <button class="px-3 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
+                            Details
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="p-6 hover:bg-slate-50 transition">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h4 class="font-semibold text-slate-900">David Martinez</h4>
+                            <p class="text-sm text-slate-600">Individual health insurance</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">Warm</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-slate-600 mb-3">
+                        <span>📧 david.m@email.com</span>
+                        <span>📞 (555) 987-6543</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-3 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700">
+                            Contact
+                        </button>
+                        <button class="px-3 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
+                            Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Upcoming Renewals -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-900">Upcoming Renewals</h3>
+                <span class="px-2 py-1 text-xs font-semibold text-purple-700 bg-purple-100 rounded-full">7 This Month</span>
+            </div>
+            <div class="divide-y divide-slate-200">
+                
+                <div class="p-6 hover:bg-slate-50 transition">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h4 class="font-semibold text-slate-900">Emily Johnson</h4>
+                            <p class="text-sm text-slate-600">POL-2024-001 • Individual</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">5 Days</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm text-slate-600">Renewal Date: Mar 20, 2024</span>
+                        <span class="text-sm font-semibold text-slate-900">$125/mo</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700">
+                            Send Reminder
+                        </button>
+                        <button class="px-3 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
+                            View Policy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="p-6 hover:bg-slate-50 transition">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h4 class="font-semibold text-slate-900">Robert Brown</h4>
+                            <p class="text-sm text-slate-600">POL-2024-015 • Family</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">12 Days</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm text-slate-600">Renewal Date: Mar 27, 2024</span>
+                        <span class="text-sm font-semibold text-slate-900">$425/mo</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700">
+                            Send Reminder
+                        </button>
+                        <button class="px-3 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
+                            View Policy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page-specific Scripts -->
+<th:block layout:fragment="scripts">
+    <script>
+        // Sales Performance Chart
+        const salesCtx = document.getElementById('salesChart');
+        if (salesCtx) {
+            new Chart(salesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+                    datasets: [{
+                        label: 'Policies Sold',
+                        data: [8, 12, 10, 15, 11, 12],
+                        backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</th:block>
+
+</body>
+</html>
+

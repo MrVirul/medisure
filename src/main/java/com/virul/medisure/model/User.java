@@ -38,6 +38,12 @@ public class User implements UserDetails {
     
     private String phone;
     
+    @Column(name = "date_of_birth")
+    private String dateOfBirth;
+    
+    @Column(length = 500)
+    private String address;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
     

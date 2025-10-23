@@ -31,10 +31,12 @@ public class AppointmentController {
             var user = authService.getCurrentUser();
             PolicyHolder policyHolder = policyHolderService.getPolicyHolderByUser(user);
             
-            // Check if policy is premium type
-            if (policyHolder.getPolicy().getType() != com.virul.medisure.model.Policy.PolicyType.PREMIUM) {
+            // Check if policy is PREMIUM or SENIOR type
+            var policyType = policyHolder.getPolicy().getType();
+            if (policyType != com.virul.medisure.model.Policy.PolicyType.PREMIUM && 
+                policyType != com.virul.medisure.model.Policy.PolicyType.SENIOR) {
                 return ResponseEntity.badRequest()
-                    .body(ApiResponse.error("Appointments are only available for Premium policy holders"));
+                    .body(ApiResponse.error("Appointment booking is only available for PREMIUM and SENIOR policy holders. Please upgrade your policy to access this feature."));
             }
             
             Appointment appointment = appointmentService.bookAppointment(policyHolder.getId(), request);

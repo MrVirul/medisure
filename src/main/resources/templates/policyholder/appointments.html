@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>My Appointments - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">My Appointments</h1>
+            <p class="text-slate-600">View and manage your scheduled appointments</p>
+        </div>
+        <a th:if="${canBookAppointments}" 
+           href="/policyholder/appointments/book" 
+           class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-primary-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Book New Appointment
+        </a>
+        <div th:unless="${canBookAppointments}"
+             class="inline-flex items-center gap-2 px-4 py-2 bg-slate-300 border border-slate-300 rounded-lg text-sm font-medium text-slate-500 cursor-not-allowed"
+             title="Available for PREMIUM and SENIOR policy holders only">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            Book Appointment (Locked)
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Error Message -->
+    <div th:if="${error}" class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+        <div class="flex items-start">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+            <div class="ml-3 flex-1">
+                <p class="text-sm text-red-700 font-medium" th:text="${error}">Error message</p>
+                <p class="text-sm text-red-600 mt-1">Your current policy type: <span class="font-semibold" th:text="${policyType}">BASIC</span></p>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-3 flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Upgrade Notice for Non-Eligible Users -->
+    <div th:unless="${canBookAppointments}" class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">🔒 Appointment Booking - Premium Feature</h3>
+                <p class="text-slate-700 mb-4">
+                    Appointment booking with our network doctors is exclusively available for <strong>PREMIUM</strong> and <strong>SENIOR</strong> policy holders.
+                    Upgrade your policy today to unlock this and other premium benefits!
+                </p>
+                <div class="flex gap-3">
+                    <a href="/policyholder/policies" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        </svg>
+                        Upgrade Policy
+                    </a>
+                    <a href="/policyholder/dashboard" class="inline-flex items-center px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition font-semibold">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Empty State -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
+        <div class="text-center max-w-md mx-auto">
+            <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900 mb-3">No Appointments Yet</h2>
+            <p class="text-slate-600 mb-6" th:text="${canBookAppointments ? 'You haven\\'t scheduled any appointments. Book your first appointment to get started.' : 'Appointment booking is available for PREMIUM and SENIOR policy holders only.'}">
+                You haven't scheduled any appointments. Book your first appointment to get started.
+            </p>
+            <a th:if="${canBookAppointments}" 
+               href="/policyholder/appointments/book" 
+               class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Book Your First Appointment
+            </a>
+            <a th:unless="${canBookAppointments}"
+               href="/policyholder/policies" 
+               class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+                Upgrade to PREMIUM or SENIOR
+            </a>
+        </div>
+    </div>
+    
+</div>
+
+</body>
+</html>
+

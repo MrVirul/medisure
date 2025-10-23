@@ -11,9 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -41,12 +39,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
+                // Public resources - Thymeleaf templates
+                .requestMatchers("/", "/home", "/index", "/auth/**", "/css/**", "/js/**", "/error/**", "/favicon.ico", "/static/**").permitAll()
+                // Public API endpoints
                 .requestMatchers("/api/auth/**", "/h2-console/**", "/uploads/**").permitAll()
-                .requestMatchers("/api/policies/all").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/policies/all", "/api/policies/active", "/api/stats").permitAll()
+                // Admin pages and APIs
+                .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                // Role-specific pages
+                .requestMatchers("/policyholder/**").hasAnyRole("ADMIN", "POLICY_HOLDER", "USER")
+                .requestMatchers("/doctor/**").hasAnyRole("ADMIN", "DOCTOR")
+                .requestMatchers("/agent/**").hasAnyRole("ADMIN", "SALES_OFFICER")
+                // Role-specific APIs
                 .requestMatchers("/api/operation-manager/**").hasAnyRole("ADMIN", "OPERATION_MANAGER")
                 .requestMatchers("/api/policy-manager/**").hasAnyRole("ADMIN", "POLICY_MANAGER")
                 .requestMatchers("/api/claims-manager/**").hasAnyRole("ADMIN", "CLAIMS_MANAGER")
@@ -55,13 +61,36 @@ public class SecurityConfig {
                 .requestMatchers("/api/customer-support/**").hasAnyRole("ADMIN", "CUSTOMER_SUPPORT_OFFICER")
                 .requestMatchers("/api/medical-coordinator/**").hasAnyRole("ADMIN", "MEDICAL_COORDINATOR")
                 .requestMatchers("/api/doctor/**").hasAnyRole("ADMIN", "DOCTOR")
-                .requestMatchers("/api/policy-holder/**").hasAnyRole("ADMIN", "POLICY_HOLDER")
+                .requestMatchers("/api/policy-holder/**").hasAnyRole("ADMIN", "POLICY_HOLDER", "USER")
                 .requestMatchers("/api/tickets/**").authenticated()
                 .anyRequest().authenticated()
             )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider())
+            // Form login for Thymeleaf pages
+            .formLogin(form -> form
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/auth/login")
+                .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/auth/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/auth/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            // Session management - use sessions for web, stateless for API
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+            // Apply JWT filter only to API endpoints
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            // CSRF protection - enabled by default for form login
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**", "/h2-console/**")
+            )
+            .authenticationProvider(authenticationProvider())
             .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();

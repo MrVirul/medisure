@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface PolicyRepository extends JpaRepository<Policy, Long> {
     List<Policy> findByIsActiveTrue();
+    List<Policy> findByIsActive(Boolean isActive);
     List<Policy> findByType(Policy.PolicyType type);
 }

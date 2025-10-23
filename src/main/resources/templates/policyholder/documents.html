@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>My Documents - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900 mb-2">My Documents</h1>
+        <p class="text-slate-600">Access your policy documents and medical records</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Empty State -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
+        <div class="text-center max-w-md mx-auto">
+            <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900 mb-3">No Documents Available</h2>
+            <p class="text-slate-600 mb-6">
+                You don't have any documents yet. Your policy documents, claim receipts, and medical records will appear here.
+            </p>
+            <a href="/policyholder/dashboard" 
+               class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+    
+</div>
+
+</body>
+</html>
+

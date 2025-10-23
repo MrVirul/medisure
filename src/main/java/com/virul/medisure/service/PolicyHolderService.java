@@ -22,9 +22,15 @@ public class PolicyHolderService {
         User user = userService.getUserById(userId);
         Policy policy = policyService.getPolicyById(policyId);
 
+        // Check if policy is active
+        if (!policy.getIsActive()) {
+            throw new RuntimeException("This policy is not available for purchase");
+        }
+
         // Check if user already has an active policy
         if (hasActivePolicy(user)) {
-            throw new RuntimeException("User already has an active policy");
+            // If user has active policy, upgrade/change it
+            return upgradePolicy(user, policy);
         }
 
         PolicyHolder policyHolder = new PolicyHolder();
@@ -38,6 +44,19 @@ public class PolicyHolderService {
         userService.changeUserRole(userId, User.UserRole.POLICY_HOLDER);
 
         return policyHolderRepository.save(policyHolder);
+    }
+
+    public PolicyHolder upgradePolicy(User user, Policy newPolicy) {
+        PolicyHolder existingPolicyHolder = policyHolderRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Policy holder not found"));
+
+        // Update the policy
+        existingPolicyHolder.setPolicy(newPolicy);
+        existingPolicyHolder.setStartDate(LocalDate.now());
+        existingPolicyHolder.setEndDate(LocalDate.now().plusMonths(newPolicy.getDurationMonths()));
+        existingPolicyHolder.setStatus(PolicyHolder.PolicyStatus.ACTIVE);
+
+        return policyHolderRepository.save(existingPolicyHolder);
     }
 
     public List<PolicyHolder> getAllPolicyHolders() {
