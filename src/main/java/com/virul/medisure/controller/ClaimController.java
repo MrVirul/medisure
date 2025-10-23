@@ -22,6 +22,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ClaimController {
 
+    private static final String CLAIM_DOCUMENTS_FOLDER = "claim-documents";
+
     private final ClaimService claimService;
     private final PolicyHolderService policyHolderService;
     private final AuthService authService;
@@ -41,6 +43,85 @@ public class ClaimController {
         }
     }
 
+    @PostMapping("/submit-with-documents")
+    @PreAuthorize("hasRole('POLICY_HOLDER')")
+    public ResponseEntity<ApiResponse<Claim>> submitClaimWithDocuments(
+            @RequestParam("policyId") Long policyId,
+            @RequestParam("claimDate") String claimDate,
+            @RequestParam("amountClaimed") String amountClaimed,
+            @RequestParam("description") String description,
+            @RequestParam(value = "medicalDiagnosis", required = false) String medicalDiagnosis,
+            @RequestParam(value = "hospitalName", required = false) String hospitalName,
+            @RequestParam(value = "treatmentDate", required = false) String treatmentDate,
+            @RequestParam(value = "billDocument", required = false) MultipartFile billDocument,
+            @RequestParam(value = "medicalReport", required = false) MultipartFile medicalReport,
+            @RequestParam(value = "prescription", required = false) MultipartFile prescription,
+            @RequestParam(value = "otherDocuments", required = false) List<MultipartFile> otherDocuments) {
+        try {
+            var user = authService.getCurrentUser();
+            PolicyHolder policyHolder = policyHolderService.getPolicyHolderByUser(user);
+            
+            ClaimRequest request = createClaimRequest(policyId, claimDate, amountClaimed, description, 
+                    medicalDiagnosis, hospitalName, treatmentDate);
+            
+            Claim claim = claimService.submitClaim(policyHolder.getId(), request);
+            
+            uploadClaimDocuments(claim, billDocument, medicalReport, prescription, otherDocuments);
+            
+            return ResponseEntity.ok(ApiResponse.success("Claim submitted successfully with documents", claim));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    private ClaimRequest createClaimRequest(Long policyId, String claimDate, String amountClaimed, 
+                                           String description, String medicalDiagnosis, String hospitalName, 
+                                           String treatmentDate) {
+        ClaimRequest request = new ClaimRequest();
+        request.setPolicyId(policyId);
+        request.setClaimDate(java.time.LocalDate.parse(claimDate));
+        request.setAmountClaimed(new java.math.BigDecimal(amountClaimed));
+        request.setDescription(description);
+        request.setMedicalDiagnosis(medicalDiagnosis);
+        request.setHospitalName(hospitalName);
+        if (treatmentDate != null && !treatmentDate.isEmpty()) {
+            request.setTreatmentDate(java.time.LocalDate.parse(treatmentDate));
+        }
+        return request;
+    }
+
+    private void uploadClaimDocuments(Claim claim, MultipartFile billDocument, MultipartFile medicalReport,
+                                     MultipartFile prescription, List<MultipartFile> otherDocuments) {
+        if (billDocument != null && !billDocument.isEmpty()) {
+            saveClaimDocument(claim, billDocument, ClaimDocument.DocumentType.BILL);
+        }
+        if (medicalReport != null && !medicalReport.isEmpty()) {
+            saveClaimDocument(claim, medicalReport, ClaimDocument.DocumentType.MEDICAL_REPORT);
+        }
+        if (prescription != null && !prescription.isEmpty()) {
+            saveClaimDocument(claim, prescription, ClaimDocument.DocumentType.PRESCRIPTION);
+        }
+        if (otherDocuments != null && !otherDocuments.isEmpty()) {
+            for (MultipartFile document : otherDocuments) {
+                if (!document.isEmpty()) {
+                    saveClaimDocument(claim, document, ClaimDocument.DocumentType.OTHER);
+                }
+            }
+        }
+    }
+
+    private void saveClaimDocument(Claim claim, MultipartFile file, ClaimDocument.DocumentType documentType) {
+        String filePath = fileStorageService.storeFile(file, CLAIM_DOCUMENTS_FOLDER);
+        ClaimDocument claimDoc = new ClaimDocument();
+        claimDoc.setClaim(claim);
+        claimDoc.setFileName(file.getOriginalFilename());
+        claimDoc.setFileUrl(filePath);
+        claimDoc.setFileType(file.getContentType());
+        claimDoc.setFileSize(file.getSize());
+        claimDoc.setDocumentType(documentType);
+        claimDocumentRepository.save(claimDoc);
+    }
+
     @PostMapping("/{claimId}/upload-document")
     @PreAuthorize("hasRole('POLICY_HOLDER')")
     public ResponseEntity<ApiResponse<ClaimDocument>> uploadClaimDocument(@PathVariable Long claimId,
@@ -49,10 +130,8 @@ public class ClaimController {
         try {
             Claim claim = claimService.getClaimById(claimId);
             
-            // Store file
-            String filePath = fileStorageService.storeFile(file, "claim-documents");
+            String filePath = fileStorageService.storeFile(file, CLAIM_DOCUMENTS_FOLDER);
             
-            // Create claim document record
             ClaimDocument claimDocument = new ClaimDocument();
             claimDocument.setClaim(claim);
             claimDocument.setFileName(file.getOriginalFilename());

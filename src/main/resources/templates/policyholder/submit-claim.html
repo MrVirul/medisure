@@ -27,68 +27,405 @@
 <!-- Main Content -->
 <div layout:fragment="content">
     
-    <div class="max-w-3xl mx-auto">
+    <div class="max-w-4xl mx-auto">
+        <!-- Alert Messages -->
+        <div id="alertContainer" class="mb-6"></div>
+
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
             
-            <!-- Coming Soon Message -->
-            <div class="text-center py-12">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-bold text-slate-900 mb-3">Claim Submission</h2>
-                <p class="text-slate-600 mb-6 max-w-lg mx-auto">
-                    The claim submission feature is under development. Soon you'll be able to submit claims for reimbursement online.
-                </p>
+            <!-- Claim Submission Form -->
+            <form id="claimSubmissionForm" enctype="multipart/form-data">
                 
-                <!-- Feature Preview -->
-                <div class="bg-slate-50 rounded-lg p-6 mb-6 text-left max-w-md mx-auto">
-                    <h3 class="font-semibold text-slate-900 mb-3">What You'll Be Able To Do:</h3>
-                    <ul class="space-y-2 text-sm text-slate-600">
-                        <li class="flex items-start gap-2">
-                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            <span>Upload medical bills and receipts</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            <span>Enter treatment details</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            <span>Track claim status in real-time</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            <span>Get notifications on approval</span>
-                        </li>
-                    </ul>
+                <!-- Policy Selection -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Policy Information
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="policyId" class="block text-sm font-medium text-slate-700 mb-2">
+                                Policy <span class="text-red-500">*</span>
+                            </label>
+                            <select id="policyId" name="policyId" required
+                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                <option value="">Select Policy</option>
+                            </select>
+                            <p class="mt-1 text-sm text-slate-500">Select the policy for this claim</p>
+                        </div>
+                        
+                        <div>
+                            <label for="claimDate" class="block text-sm font-medium text-slate-700 mb-2">
+                                Claim Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" id="claimDate" name="claimDate" required
+                                   class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <p class="mt-1 text-sm text-slate-500">Date when you are filing this claim</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="flex gap-3 justify-center">
-                    <a href="/policyholder/dashboard" 
-                       class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">
-                        Back to Dashboard
-                    </a>
+
+                <!-- Treatment Details -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        Treatment Details
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="treatmentDate" class="block text-sm font-medium text-slate-700 mb-2">
+                                Treatment Date
+                            </label>
+                            <input type="date" id="treatmentDate" name="treatmentDate"
+                                   class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                        
+                        <div>
+                            <label for="hospitalName" class="block text-sm font-medium text-slate-700 mb-2">
+                                Hospital/Clinic Name
+                            </label>
+                            <input type="text" id="hospitalName" name="hospitalName" placeholder="Enter hospital or clinic name"
+                                   class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label for="medicalDiagnosis" class="block text-sm font-medium text-slate-700 mb-2">
+                                Medical Diagnosis
+                            </label>
+                            <input type="text" id="medicalDiagnosis" name="medicalDiagnosis" placeholder="Enter diagnosis or reason for treatment"
+                                   class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claim Details -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Claim Amount & Description
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 gap-6">
+                        <div>
+                            <label for="amountClaimed" class="block text-sm font-medium text-slate-700 mb-2">
+                                Amount Claimed <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-2.5 text-slate-500">LKR</span>
+                                <input type="number" id="amountClaimed" name="amountClaimed" required min="0" step="0.01" placeholder="0.00"
+                                       class="w-full pl-16 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            <p class="mt-1 text-sm text-slate-500">Total amount you are claiming</p>
+                        </div>
+                        
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-slate-700 mb-2">
+                                Claim Description <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="description" name="description" required rows="4" placeholder="Provide detailed description of the medical expenses..."
+                                      class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"></textarea>
+                            <p class="mt-1 text-sm text-slate-500">Describe the medical treatment and expenses in detail</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Uploads -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        Supporting Documents
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Bill Document -->
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-primary-400 transition-colors">
+                            <label for="billDocument" class="block">
+                                <div class="flex items-center gap-3 cursor-pointer">
+                                    <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <p class="text-sm font-medium text-slate-900">Medical Bill/Receipt <span class="text-red-500">*</span></p>
+                                        <p class="text-xs text-slate-500">Upload your medical bill or receipt (PDF, JPG, PNG - Max 10MB)</p>
+                                    </div>
+                                </div>
+                                <input type="file" id="billDocument" name="billDocument" accept="image/*,.pdf" required class="hidden" onchange="handleFileSelect(this, 'billPreview')">
+                            </label>
+                            <div id="billPreview" class="mt-3"></div>
+                        </div>
+
+                        <!-- Medical Report -->
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-primary-400 transition-colors">
+                            <label for="medicalReport" class="block">
+                                <div class="flex items-center gap-3 cursor-pointer">
+                                    <div class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <p class="text-sm font-medium text-slate-900">Medical Report (Optional)</p>
+                                        <p class="text-xs text-slate-500">Upload medical report or diagnosis certificate</p>
+                                    </div>
+                                </div>
+                                <input type="file" id="medicalReport" name="medicalReport" accept="image/*,.pdf" class="hidden" onchange="handleFileSelect(this, 'reportPreview')">
+                            </label>
+                            <div id="reportPreview" class="mt-3"></div>
+                        </div>
+
+                        <!-- Prescription -->
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-primary-400 transition-colors">
+                            <label for="prescription" class="block">
+                                <div class="flex items-center gap-3 cursor-pointer">
+                                    <div class="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <p class="text-sm font-medium text-slate-900">Prescription (Optional)</p>
+                                        <p class="text-xs text-slate-500">Upload doctor's prescription if applicable</p>
+                                    </div>
+                                </div>
+                                <input type="file" id="prescription" name="prescription" accept="image/*,.pdf" class="hidden" onchange="handleFileSelect(this, 'prescriptionPreview')">
+                            </label>
+                            <div id="prescriptionPreview" class="mt-3"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex gap-3">
+                            <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="text-sm text-blue-800">
+                                <p class="font-medium mb-1">Document Requirements:</p>
+                                <ul class="list-disc list-inside space-y-1 text-blue-700">
+                                    <li>At least the medical bill/receipt is required</li>
+                                    <li>Accepted formats: JPG, PNG, PDF</li>
+                                    <li>Maximum file size: 10MB per file</li>
+                                    <li>Ensure documents are clear and readable</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex gap-4 pt-6 border-t border-slate-200">
+                    <button type="submit" id="submitBtn"
+                            class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Submit Claim
+                    </button>
                     <a href="/policyholder/claims" 
-                       class="inline-flex items-center px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition font-medium">
-                        View My Claims
+                       class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition font-medium">
+                        Cancel
                     </a>
                 </div>
-            </div>
+
+            </form>
             
         </div>
     </div>
     
 </div>
+
+<!-- Custom JavaScript -->
+<script layout:fragment="scripts">
+    let userPolicyId = null;
+
+    // Load user's policy
+    async function loadUserPolicy() {
+        try {
+            const response = await fetch('/api/policies/my-policy', {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.data) {
+                    const policy = data.data;
+                    userPolicyId = policy.id;
+                    const policySelect = document.getElementById('policyId');
+                    policySelect.innerHTML = `<option value="${policy.id}">${policy.policy.name} - ${policy.policy.type} (Coverage: $${policy.policy.coverageAmount.toLocaleString()})</option>`;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading policy:', error);
+        }
+    }
+
+    // Set default date to today
+    document.getElementById('claimDate').valueAsDate = new Date();
+
+    // Handle file selection and preview
+    function handleFileSelect(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const file = input.files[0];
+        
+        if (file) {
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                showAlert('File size must be less than 10MB', 'error');
+                input.value = '';
+                return;
+            }
+            
+            // Show file info
+            const fileSize = (file.size / 1024).toFixed(2);
+            preview.innerHTML = `
+                <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="flex-grow">
+                        <p class="text-sm font-medium text-slate-900">${file.name}</p>
+                        <p class="text-xs text-slate-500">${fileSize} KB</p>
+                    </div>
+                    <button type="button" onclick="clearFile('${input.id}', '${previewId}')" class="text-slate-400 hover:text-red-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    // Clear file selection
+    function clearFile(inputId, previewId) {
+        document.getElementById(inputId).value = '';
+        document.getElementById(previewId).innerHTML = '';
+    }
+
+    // Show alert message
+    function showAlert(message, type = 'success') {
+        const alertContainer = document.getElementById('alertContainer');
+        const alertColors = {
+            success: 'bg-green-50 border-green-200 text-green-800',
+            error: 'bg-red-50 border-red-200 text-red-800',
+            warning: 'bg-yellow-50 border-yellow-200 text-yellow-800'
+        };
+        
+        const iconPaths = {
+            success: 'M5 13l4 4L19 7',
+            error: 'M6 18L18 6M6 6l12 12',
+            warning: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'
+        };
+        
+        alertContainer.innerHTML = `
+            <div class="border ${alertColors[type]} rounded-lg p-4 flex items-start gap-3">
+                <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPaths[type]}"/>
+                </svg>
+                <p class="flex-grow">${message}</p>
+                <button onclick="this.parentElement.remove()" class="hover:opacity-70">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            alertContainer.innerHTML = '';
+        }, 5000);
+    }
+
+    // Handle form submission
+    document.getElementById('claimSubmissionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const originalBtnContent = submitBtn.innerHTML;
+        
+        try {
+            // Disable submit button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Submitting...
+            `;
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('policyId', document.getElementById('policyId').value);
+            formData.append('claimDate', document.getElementById('claimDate').value);
+            formData.append('amountClaimed', document.getElementById('amountClaimed').value);
+            formData.append('description', document.getElementById('description').value);
+            
+            const treatmentDate = document.getElementById('treatmentDate').value;
+            const hospitalName = document.getElementById('hospitalName').value;
+            const medicalDiagnosis = document.getElementById('medicalDiagnosis').value;
+            
+            if (treatmentDate) formData.append('treatmentDate', treatmentDate);
+            if (hospitalName) formData.append('hospitalName', hospitalName);
+            if (medicalDiagnosis) formData.append('medicalDiagnosis', medicalDiagnosis);
+            
+            // Append files
+            const billDocument = document.getElementById('billDocument').files[0];
+            const medicalReport = document.getElementById('medicalReport').files[0];
+            const prescription = document.getElementById('prescription').files[0];
+            
+            if (billDocument) formData.append('billDocument', billDocument);
+            if (medicalReport) formData.append('medicalReport', medicalReport);
+            if (prescription) formData.append('prescription', prescription);
+            
+            // Submit the form
+            const response = await fetch('/api/claims/submit-with-documents', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showAlert('Claim submitted successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/policyholder/claims';
+                }, 2000);
+            } else {
+                showAlert(data.message || 'Failed to submit claim', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnContent;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showAlert('An error occurred while submitting the claim', 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+        }
+    });
+
+    // Load policy on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUserPolicy();
+    });
+</script>
 
 </body>
 </html>

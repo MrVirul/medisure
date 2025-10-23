@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
@@ -30,9 +31,17 @@ public class HomeController {
      * Root path - show landing page or redirect to dashboard if authenticated
      */
     @GetMapping("/")
-    public String home(Authentication authentication, Model model) {
+    public String home(@RequestParam(required = false) String logout,
+                      Authentication authentication, 
+                      Model model) {
         if (authentication != null && authentication.isAuthenticated()) {
             return "redirect:/dashboard";
+        }
+        
+        // Handle logout success message
+        if (logout != null) {
+            model.addAttribute("logout", true);
+            model.addAttribute("logoutMessage", "You have been successfully logged out");
         }
         
         // Load statistics for the landing page
@@ -50,16 +59,20 @@ public class HomeController {
      * Home path - same as root
      */
     @GetMapping("/home")
-    public String homeAlt(Authentication authentication, Model model) {
-        return home(authentication, model);
+    public String homeAlt(@RequestParam(required = false) String logout,
+                         Authentication authentication, 
+                         Model model) {
+        return home(logout, authentication, model);
     }
     
     /**
      * Index path - same as root
      */
     @GetMapping("/index")
-    public String index(Authentication authentication, Model model) {
-        return home(authentication, model);
+    public String index(@RequestParam(required = false) String logout,
+                       Authentication authentication, 
+                       Model model) {
+        return home(logout, authentication, model);
     }
     
     /**
