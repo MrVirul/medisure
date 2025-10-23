@@ -1,6 +1,7 @@
 package com.virul.medisure.controller;
 
 import com.virul.medisure.dto.ApiResponse;
+import com.virul.medisure.model.Payment;
 import com.virul.medisure.model.PolicyHolder;
 import com.virul.medisure.service.AuthService;
 import com.virul.medisure.service.PolicyHolderService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,16 +26,27 @@ public class PolicyHolderController {
 
     @PostMapping("/purchase/{policyId}")
     @PreAuthorize("hasAnyRole('USER', 'POLICY_HOLDER')")
-    public ResponseEntity<ApiResponse<PolicyHolder>> purchasePolicy(@PathVariable Long policyId) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> purchasePolicy(@PathVariable Long policyId) {
         try {
             var user = authService.getCurrentUser();
-            PolicyHolder policyHolder = policyHolderService.purchasePolicy(user.getId(), policyId);
+            
+            // Purchase the policy and process payment
+            Map<String, Object> result = policyHolderService.purchasePolicyWithPayment(user.getId(), policyId);
+            
+            PolicyHolder policyHolder = (PolicyHolder) result.get("policyHolder");
+            Payment payment = (Payment) result.get("payment");
             
             // Generate PDF document
             String pdfPath = pdfService.generatePolicyDocument(policyHolder);
             policyHolder.setPolicyDocumentUrl(pdfPath);
             
-            return ResponseEntity.ok(ApiResponse.success("Policy purchased successfully", policyHolder));
+            // Prepare response
+            Map<String, Object> response = new HashMap<>();
+            response.put("policyHolder", policyHolder);
+            response.put("payment", payment);
+            response.put("message", "Policy purchased successfully! Payment processed.");
+            
+            return ResponseEntity.ok(ApiResponse.success("Policy purchased successfully", response));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }

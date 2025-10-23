@@ -158,7 +158,7 @@
 
             const result = await response.json();
 
-            if (result.success && result.data) {
+            if (result.status === 'success' && result.data) {
                 allPolicies = result.data;
                 filteredPolicies = [...allPolicies];
                 sortPolicies();
@@ -402,7 +402,7 @@
 
             const result = await response.json();
 
-            if (result.success) {
+            if (result.status === 'success') {
                 window.showToast('Policy purchased successfully!', 'success');
                 setTimeout(() => {
                     window.location.href = '/policyholder/policies';
