@@ -280,7 +280,7 @@
 
             loadingState.classList.add('hidden');
 
-            if (result.success && result.data) {
+            if (result.status === 'success' && result.data) {
                 displayPolicyData(result.data);
                 policySection.classList.remove('hidden');
             } else {

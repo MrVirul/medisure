@@ -75,8 +75,8 @@ public class DashboardController {
         model.addAttribute("currentPath", request.getRequestURI());
         model.addAttribute("pageTitle", "Admin Dashboard");
         
-        // Total active policy holders
-        long totalPolicies = policyHolderRepository.findByStatus(PolicyHolder.PolicyStatus.ACTIVE).size();
+        // Total policy holders (all statuses)
+        long totalPolicies = policyHolderRepository.findAll().size();
         model.addAttribute("totalPolicies", totalPolicies);
         
         // Active claims (not completed or rejected)
@@ -91,15 +91,11 @@ public class DashboardController {
             .count();
         model.addAttribute("activeClaims", activeClaims);
         
-        // Pending approvals (claims needing review)
-        long pendingApprovals = claimRepository.findAll().stream()
-            .filter(claim -> claim.getStatus() == Claim.ClaimStatus.SUBMITTED || 
-                           claim.getStatus() == Claim.ClaimStatus.UNDER_REVIEW)
-            .count();
+        // Pending policy approvals (policies awaiting PM and FO approval)
+        long pendingApprovals = policyHolderRepository.findByStatus(PolicyHolder.PolicyStatus.PENDING_APPROVAL).size();
         model.addAttribute("pendingApprovals", pendingApprovals);
         
         // Calculate monthly revenue from active policies
-        YearMonth currentMonth = YearMonth.now();
         BigDecimal monthlyRevenue = policyHolderRepository.findByStatus(PolicyHolder.PolicyStatus.ACTIVE).stream()
             .map(ph -> ph.getPolicy().getPremiumAmount())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -333,6 +329,36 @@ public class DashboardController {
         model.addAttribute("currentPath", request.getRequestURI());
         model.addAttribute("pageTitle", "Pending Policy Approvals");
         return "admin/pending-approvals";
+    }
+    
+    /**
+     * Admin Policies Page
+     */
+    @GetMapping("/admin/policies")
+    public String adminPoliciesPage(Model model, HttpServletRequest request) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Manage Policies");
+        return "admin/policies";
+    }
+    
+    /**
+     * Admin Users Page
+     */
+    @GetMapping("/admin/users")
+    public String adminUsersPage(Model model, HttpServletRequest request) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Manage Users");
+        return "admin/users";
+    }
+    
+    /**
+     * Admin Claims Page
+     */
+    @GetMapping("/admin/claims")
+    public String adminClaimsPage(Model model, HttpServletRequest request) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Review Claims");
+        return "admin/claims";
     }
 }
 
