@@ -61,9 +61,9 @@
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-slate-900 mb-2">Admin Dashboard</h1>
-                            <p class="text-slate-600">Welcome back! Here's what's happening with your insurance platform today.</p>
+                            <p class="text-slate-600">Welcome to the MediSure admin dashboard.</p>
                         </div>
-                        <div class="mt-4 md:mt-0 flex gap-3">
+                        <div class="mt-4 md:mt-0">
                             <button onclick="window.location.reload()" 
                                     class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,140 +71,20 @@
                                 </svg>
                                 Refresh
                             </button>
-                            <button class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-primary-700">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                                Export Report
-                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Key Metrics Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    
-                    <!-- Total Policies Card -->
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                            </div>
-                            <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">+12.5%</span>
+                <!-- Welcome Message -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-slate-600 mb-1">Total Policies</p>
-                            <p class="text-3xl font-bold text-slate-900" th:text="${totalPolicies != null ? totalPolicies : '1,234'}">1,234</p>
-                            <p class="text-xs text-slate-500 mt-2">Active insurance policies</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Active Claims Card -->
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                                </svg>
-                            </div>
-                            <span class="px-2 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">Pending</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-slate-600 mb-1">Active Claims</p>
-                            <p class="text-3xl font-bold text-slate-900" th:text="${activeClaims != null ? activeClaims : '87'}">87</p>
-                            <p class="text-xs text-slate-500 mt-2">Awaiting review</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Pending Approvals Card -->
-                    <a href="/admin/pending-approvals" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition cursor-pointer block">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full" th:if="${pendingApprovals > 0}">Action Needed</span>
-                            <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full" th:if="${pendingApprovals == 0}">All Clear</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-slate-600 mb-1">Pending Approvals</p>
-                            <p class="text-3xl font-bold text-slate-900" th:text="${pendingApprovals != null ? pendingApprovals : '0'}">0</p>
-                            <p class="text-xs text-slate-500 mt-2" th:text="${pendingApprovals > 0 ? 'Require your attention' : 'No pending policies'}">Require your attention</p>
-                        </div>
-                    </a>
-                    
-                    <!-- Monthly Revenue Card -->
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">+8.2%</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-slate-600 mb-1">Monthly Revenue</p>
-                            <p class="text-3xl font-bold text-slate-900">$<span th:text="${monthlyRevenue != null ? monthlyRevenue : '245,890'}">245,890</span></p>
-                            <p class="text-xs text-slate-500 mt-2">vs. last month</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Quick Actions -->
-                <div class="bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl shadow-lg p-8 text-white">
-                    <h3 class="text-2xl font-bold mb-6">Quick Actions</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <a href="/admin/policies" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
-                            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold">Manage Policies</p>
-                                <p class="text-xs text-white/80">View all policies</p>
-                            </div>
-                        </a>
-                        
-                        <a href="/admin/users" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
-                            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold">Manage Users</p>
-                                <p class="text-xs text-white/80">View all users</p>
-                            </div>
-                        </a>
-                        
-                        <a href="/admin/pending-approvals" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
-                            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold">Pending Approvals</p>
-                                <p class="text-xs text-white/80"><span th:text="${pendingApprovals}">0</span> pending</p>
-                            </div>
-                        </a>
-                        
-                        <a href="/admin/claims" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-sm transition">
-                            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold">Review Claims</p>
-                                <p class="text-xs text-white/80"><span th:text="${activeClaims}">0</span> active</p>
-                            </div>
-                        </a>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-2">Welcome to MediSure Admin</h2>
+                        <p class="text-slate-600">You're successfully logged in as an administrator.</p>
                     </div>
                 </div>
             </div>
