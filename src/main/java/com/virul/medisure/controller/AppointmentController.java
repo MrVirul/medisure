@@ -68,4 +68,49 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('POLICY_HOLDER')")
+    public ResponseEntity<ApiResponse<Appointment>> updateAppointment(@PathVariable Long id,
+                                                                       @Valid @RequestBody AppointmentRequest request) {
+        try {
+            var user = authService.getCurrentUser();
+            PolicyHolder policyHolder = policyHolderService.getPolicyHolderByUser(user);
+            
+            // Check if policy is PREMIUM or SENIOR type
+            var policyType = policyHolder.getPolicy().getType();
+            if (policyType != com.virul.medisure.model.Policy.PolicyType.PREMIUM && 
+                policyType != com.virul.medisure.model.Policy.PolicyType.SENIOR) {
+                return ResponseEntity.badRequest()
+                    .body(ApiResponse.error("Appointment management is only available for PREMIUM and SENIOR policy holders."));
+            }
+            
+            Appointment appointment = appointmentService.updateAppointment(id, policyHolder.getId(), request);
+            return ResponseEntity.ok(ApiResponse.success("Appointment updated successfully", appointment));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('POLICY_HOLDER')")
+    public ResponseEntity<ApiResponse<Void>> deleteAppointment(@PathVariable Long id) {
+        try {
+            var user = authService.getCurrentUser();
+            PolicyHolder policyHolder = policyHolderService.getPolicyHolderByUser(user);
+            
+            // Check if policy is PREMIUM or SENIOR type
+            var policyType = policyHolder.getPolicy().getType();
+            if (policyType != com.virul.medisure.model.Policy.PolicyType.PREMIUM && 
+                policyType != com.virul.medisure.model.Policy.PolicyType.SENIOR) {
+                return ResponseEntity.badRequest()
+                    .body(ApiResponse.error("Appointment management is only available for PREMIUM and SENIOR policy holders."));
+            }
+            
+            appointmentService.deleteAppointment(id, policyHolder.getId());
+            return ResponseEntity.ok(ApiResponse.success("Appointment deleted successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
 }

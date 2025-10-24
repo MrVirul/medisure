@@ -46,8 +46,9 @@ public class SecurityConfig {
                 // Public API endpoints
                 .requestMatchers("/api/auth/**", "/h2-console/**", "/uploads/**").permitAll()
                 .requestMatchers("/api/policies/all", "/api/policies/active", "/api/stats").permitAll()
-                // Admin pages and APIs
-                .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                // Admin pages and APIs - allow all management roles
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "OPERATION_MANAGER", "POLICY_MANAGER", "CLAIMS_MANAGER", "FINANCE_MANAGER", "MEDICAL_COORDINATOR", "CUSTOMER_SUPPORT_OFFICER")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 // Role-specific pages
                 .requestMatchers("/policyholder/**").hasAnyRole("ADMIN", "POLICY_HOLDER", "USER")
                 .requestMatchers("/doctor/**").hasAnyRole("ADMIN", "DOCTOR")

@@ -1,9 +1,11 @@
 package com.virul.medisure.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -18,8 +20,10 @@ public class PolicyDocument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_holder_id", nullable = false)
+    @JsonIgnoreProperties({"user", "policy"})
     private PolicyHolder policyHolder;
     
     @Column(name = "file_name", nullable = false)

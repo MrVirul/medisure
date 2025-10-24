@@ -96,4 +96,34 @@ public class DoctorController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
+
+    @PostMapping("/appointment/{id}/accept")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<ApiResponse<Appointment>> acceptAppointment(@PathVariable Long id) {
+        try {
+            User user = authService.getCurrentUser();
+            Doctor doctor = doctorRepository.findByUser(user)
+                    .orElseThrow(() -> new RuntimeException("Doctor profile not found"));
+            Appointment appointment = appointmentService.acceptAppointment(id, doctor.getId());
+            return ResponseEntity.ok(ApiResponse.success("Appointment accepted successfully", appointment));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/appointment/{id}/reject")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<ApiResponse<Appointment>> rejectAppointment(@PathVariable Long id,
+                                                                       @RequestBody Map<String, String> request) {
+        try {
+            User user = authService.getCurrentUser();
+            Doctor doctor = doctorRepository.findByUser(user)
+                    .orElseThrow(() -> new RuntimeException("Doctor profile not found"));
+            String rejectionReason = request.getOrDefault("rejectionReason", "Not specified");
+            Appointment appointment = appointmentService.rejectAppointment(id, doctor.getId(), rejectionReason);
+            return ResponseEntity.ok(ApiResponse.success("Appointment rejected", appointment));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
 }

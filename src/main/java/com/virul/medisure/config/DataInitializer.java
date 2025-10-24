@@ -1,7 +1,9 @@
 package com.virul.medisure.config;
 
+import com.virul.medisure.model.Doctor;
 import com.virul.medisure.model.Policy;
 import com.virul.medisure.model.User;
+import com.virul.medisure.repository.DoctorRepository;
 import com.virul.medisure.repository.PolicyRepository;
 import com.virul.medisure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PolicyRepository policyRepository;
+    private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -61,6 +64,79 @@ public class DataInitializer implements CommandLineRunner {
             customerSupport.setPhone("1234567893");
             customerSupport.setRole(User.UserRole.CUSTOMER_SUPPORT_OFFICER);
             userRepository.save(customerSupport);
+        }
+
+        // Create sample doctors with their Doctor profiles
+        if (!userRepository.existsByEmail("doctor1@medicare.com")) {
+            User doctorUser1 = new User();
+            doctorUser1.setFullName("Dr. Sarah Johnson");
+            doctorUser1.setEmail("doctor1@medicare.com");
+            doctorUser1.setPassword(passwordEncoder.encode("doctor123"));
+            doctorUser1.setPhone("1234567894");
+            doctorUser1.setRole(User.UserRole.DOCTOR);
+            User savedDoctor1 = userRepository.save(doctorUser1);
+            
+            // Create Doctor profile
+            Doctor doctor1 = new Doctor();
+            doctor1.setUser(savedDoctor1);
+            doctor1.setSpecialization("Cardiologist");
+            doctor1.setRegistrationNo("MED-CARD-001");
+            doctor1.setIsAvailable(true);
+            doctorRepository.save(doctor1);
+        }
+
+        if (!userRepository.existsByEmail("doctor2@medicare.com")) {
+            User doctorUser2 = new User();
+            doctorUser2.setFullName("Dr. Michael Chen");
+            doctorUser2.setEmail("doctor2@medicare.com");
+            doctorUser2.setPassword(passwordEncoder.encode("doctor123"));
+            doctorUser2.setPhone("1234567895");
+            doctorUser2.setRole(User.UserRole.DOCTOR);
+            User savedDoctor2 = userRepository.save(doctorUser2);
+            
+            // Create Doctor profile
+            Doctor doctor2 = new Doctor();
+            doctor2.setUser(savedDoctor2);
+            doctor2.setSpecialization("Pediatrician");
+            doctor2.setRegistrationNo("MED-PED-001");
+            doctor2.setIsAvailable(true);
+            doctorRepository.save(doctor2);
+        }
+
+        if (!userRepository.existsByEmail("doctor3@medicare.com")) {
+            User doctorUser3 = new User();
+            doctorUser3.setFullName("Dr. Emily Rodriguez");
+            doctorUser3.setEmail("doctor3@medicare.com");
+            doctorUser3.setPassword(passwordEncoder.encode("doctor123"));
+            doctorUser3.setPhone("1234567896");
+            doctorUser3.setRole(User.UserRole.DOCTOR);
+            User savedDoctor3 = userRepository.save(doctorUser3);
+            
+            // Create Doctor profile
+            Doctor doctor3 = new Doctor();
+            doctor3.setUser(savedDoctor3);
+            doctor3.setSpecialization("General Physician");
+            doctor3.setRegistrationNo("MED-GP-001");
+            doctor3.setIsAvailable(true);
+            doctorRepository.save(doctor3);
+        }
+
+        if (!userRepository.existsByEmail("doctor4@medicare.com")) {
+            User doctorUser4 = new User();
+            doctorUser4.setFullName("Dr. James Wilson");
+            doctorUser4.setEmail("doctor4@medicare.com");
+            doctorUser4.setPassword(passwordEncoder.encode("doctor123"));
+            doctorUser4.setPhone("1234567897");
+            doctorUser4.setRole(User.UserRole.DOCTOR);
+            User savedDoctor4 = userRepository.save(doctorUser4);
+            
+            // Create Doctor profile
+            Doctor doctor4 = new Doctor();
+            doctor4.setUser(savedDoctor4);
+            doctor4.setSpecialization("Orthopedic Surgeon");
+            doctor4.setRegistrationNo("MED-ORTH-001");
+            doctor4.setIsAvailable(true);
+            doctorRepository.save(doctor4);
         }
 
         // Create sample policies

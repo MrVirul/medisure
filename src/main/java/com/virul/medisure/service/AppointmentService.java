@@ -22,41 +22,34 @@ public class AppointmentService {
         PolicyHolder policyHolder = policyHolderService.getPolicyHolderById(policyHolderId);
         Doctor doctor = doctorService.getDoctorById(request.getDoctorId());
 
-        // Check if doctor is available
-        if (!doctor.getIsAvailable()) {
-            throw new RuntimeException("Doctor is not available");
-        }
-
-        // Check if appointment time is available
-        List<Appointment> existingAppointments = appointmentRepository
-                .findByDoctorAndAppointmentDate(doctor, request.getAppointmentDate());
-        
-        boolean timeSlotTaken = existingAppointments.stream()
-                .anyMatch(appointment -> appointment.getAppointmentTime().equals(request.getAppointmentTime()));
-        
-        if (timeSlotTaken) {
-            throw new RuntimeException("Time slot is already booked");
-        }
+        // No need to check time slots - premium and senior users can book any time
 
         Appointment appointment = new Appointment();
         appointment.setPolicyHolder(policyHolder);
         appointment.setDoctor(doctor);
         appointment.setAppointmentDate(request.getAppointmentDate());
         appointment.setAppointmentTime(request.getAppointmentTime());
-        appointment.setStatus(Appointment.AppointmentStatus.SCHEDULED);
+        appointment.setStatus(Appointment.AppointmentStatus.PENDING);
         appointment.setReason(request.getReason());
         appointment.setNotes(request.getNotes());
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
         
-        // Log the appointment booking
-        auditLogService.logAction(
-            AuditLog.EntityType.APPOINTMENT,
-            savedAppointment.getId(),
-            AuditLog.Action.CREATE,
-            policyHolder.getUser().getEmail(),
-            "Appointment booked with Dr. " + doctor.getUser().getFullName()
-        );
+        // Log the appointment booking with safe access to user data
+        try {
+            String userEmail = policyHolder.getUser() != null ? policyHolder.getUser().getEmail() : "Unknown";
+            String doctorName = doctor.getUser() != null ? doctor.getUser().getFullName() : "Unknown Doctor";
+            auditLogService.logAction(
+                AuditLog.EntityType.APPOINTMENT,
+                savedAppointment.getId(),
+                AuditLog.Action.CREATE,
+                userEmail,
+                "Appointment booked with Dr. " + doctorName
+            );
+        } catch (Exception e) {
+            // If audit logging fails, don't fail the appointment booking
+            System.err.println("Failed to log appointment booking: " + e.getMessage());
+        }
 
         return savedAppointment;
     }
@@ -105,5 +98,153 @@ public class AppointmentService {
     public List<Appointment> getTodayAppointments(Long doctorId) {
         Doctor doctor = doctorService.getDoctorById(doctorId);
         return appointmentRepository.findByDoctorAndAppointmentDate(doctor, LocalDate.now());
+    }
+
+    public Appointment updateAppointment(Long appointmentId, Long policyHolderId, AppointmentRequest request) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        
+        // Verify the appointment belongs to the policy holder
+        if (!appointment.getPolicyHolder().getId().equals(policyHolderId)) {
+            throw new RuntimeException("You are not authorized to edit this appointment");
+        }
+        
+        // Only allow editing of pending or scheduled appointments
+        if (appointment.getStatus() != Appointment.AppointmentStatus.PENDING && 
+            appointment.getStatus() != Appointment.AppointmentStatus.SCHEDULED) {
+            throw new RuntimeException("Cannot edit appointment with status: " + appointment.getStatus());
+        }
+        
+        Doctor doctor = doctorService.getDoctorById(request.getDoctorId());
+        
+        appointment.setDoctor(doctor);
+        appointment.setAppointmentDate(request.getAppointmentDate());
+        appointment.setAppointmentTime(request.getAppointmentTime());
+        appointment.setReason(request.getReason());
+        appointment.setNotes(request.getNotes());
+        appointment.setStatus(Appointment.AppointmentStatus.PENDING); // Reset to pending on edit
+        appointment.setUpdatedAt(java.time.LocalDateTime.now());
+        
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        
+        // Log the update with safe access
+        try {
+            String userEmail = appointment.getPolicyHolder() != null && appointment.getPolicyHolder().getUser() != null 
+                ? appointment.getPolicyHolder().getUser().getEmail() : "Unknown";
+            auditLogService.logAction(
+                AuditLog.EntityType.APPOINTMENT,
+                appointmentId,
+                AuditLog.Action.UPDATE,
+                userEmail,
+                "Appointment updated"
+            );
+        } catch (Exception e) {
+            System.err.println("Failed to log appointment update: " + e.getMessage());
+        }
+        
+        return savedAppointment;
+    }
+
+    public void deleteAppointment(Long appointmentId, Long policyHolderId) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        
+        // Verify the appointment belongs to the policy holder
+        if (!appointment.getPolicyHolder().getId().equals(policyHolderId)) {
+            throw new RuntimeException("You are not authorized to delete this appointment");
+        }
+        
+        // Only allow deletion of pending or scheduled appointments
+        if (appointment.getStatus() != Appointment.AppointmentStatus.PENDING && 
+            appointment.getStatus() != Appointment.AppointmentStatus.SCHEDULED) {
+            throw new RuntimeException("Cannot delete appointment with status: " + appointment.getStatus());
+        }
+        
+        // Log before deleting with safe access
+        try {
+            String userEmail = appointment.getPolicyHolder() != null && appointment.getPolicyHolder().getUser() != null 
+                ? appointment.getPolicyHolder().getUser().getEmail() : "Unknown";
+            auditLogService.logAction(
+                AuditLog.EntityType.APPOINTMENT,
+                appointmentId,
+                AuditLog.Action.DELETE,
+                userEmail,
+                "Appointment deleted"
+            );
+        } catch (Exception e) {
+            System.err.println("Failed to log appointment deletion: " + e.getMessage());
+        }
+        
+        appointmentRepository.delete(appointment);
+    }
+
+    public Appointment acceptAppointment(Long appointmentId, Long doctorId) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        
+        // Verify the appointment belongs to the doctor
+        if (!appointment.getDoctor().getId().equals(doctorId)) {
+            throw new RuntimeException("You are not authorized to accept this appointment");
+        }
+        
+        if (appointment.getStatus() != Appointment.AppointmentStatus.PENDING) {
+            throw new RuntimeException("Only pending appointments can be accepted");
+        }
+        
+        appointment.setStatus(Appointment.AppointmentStatus.SCHEDULED);
+        appointment.setUpdatedAt(java.time.LocalDateTime.now());
+        
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        
+        // Log the acceptance with safe access
+        try {
+            String doctorEmail = appointment.getDoctor() != null && appointment.getDoctor().getUser() != null 
+                ? appointment.getDoctor().getUser().getEmail() : "Unknown";
+            auditLogService.logAction(
+                AuditLog.EntityType.APPOINTMENT,
+                appointmentId,
+                AuditLog.Action.UPDATE,
+                doctorEmail,
+                "Appointment accepted by doctor"
+            );
+        } catch (Exception e) {
+            System.err.println("Failed to log appointment acceptance: " + e.getMessage());
+        }
+        
+        return savedAppointment;
+    }
+
+    public Appointment rejectAppointment(Long appointmentId, Long doctorId, String rejectionReason) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        
+        // Verify the appointment belongs to the doctor
+        if (!appointment.getDoctor().getId().equals(doctorId)) {
+            throw new RuntimeException("You are not authorized to reject this appointment");
+        }
+        
+        if (appointment.getStatus() != Appointment.AppointmentStatus.PENDING && 
+            appointment.getStatus() != Appointment.AppointmentStatus.SCHEDULED) {
+            throw new RuntimeException("Only pending or scheduled appointments can be rejected");
+        }
+        
+        appointment.setStatus(Appointment.AppointmentStatus.REJECTED);
+        appointment.setRejectionReason(rejectionReason);
+        appointment.setUpdatedAt(java.time.LocalDateTime.now());
+        
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        
+        // Log the rejection with safe access
+        try {
+            String doctorEmail = appointment.getDoctor() != null && appointment.getDoctor().getUser() != null 
+                ? appointment.getDoctor().getUser().getEmail() : "Unknown";
+            auditLogService.logAction(
+                AuditLog.EntityType.APPOINTMENT,
+                appointmentId,
+                AuditLog.Action.UPDATE,
+                doctorEmail,
+                "Appointment rejected: " + rejectionReason
+            );
+        } catch (Exception e) {
+            System.err.println("Failed to log appointment rejection: " + e.getMessage());
+        }
+        
+        return savedAppointment;
     }
 }

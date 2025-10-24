@@ -36,7 +36,8 @@ public class DoctorService {
     }
 
     public List<Doctor> getAvailableDoctors() {
-        return doctorRepository.findByIsAvailableTrue();
+        // Treat every registered doctor as available for booking
+        return doctorRepository.findAll();
     }
 
     public List<Doctor> getDoctorsBySpecialization(String specialization) {

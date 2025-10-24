@@ -1,9 +1,11 @@
 package com.virul.medisure.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,12 +22,16 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_holder_id", nullable = false)
+    @JsonIgnoreProperties({"user", "policy"})
     private PolicyHolder policyHolder;
     
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
+    @JsonIgnoreProperties({"user"})
     private Doctor doctor;
     
     @Column(name = "appointment_date", nullable = false)
@@ -42,6 +48,9 @@ public class Appointment {
     
     private String notes;
     
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
     
@@ -49,10 +58,12 @@ public class Appointment {
     private LocalDateTime updatedAt = LocalDateTime.now();
     
     public enum AppointmentStatus {
+        PENDING,
         SCHEDULED,
         CONFIRMED,
         COMPLETED,
         CANCELLED,
+        REJECTED,
         NO_SHOW
     }
 }

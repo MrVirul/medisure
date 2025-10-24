@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -20,9 +21,11 @@ public class AppointmentRequest {
     
     @NotNull(message = "Appointment date is required")
     @FutureOrPresent(message = "Appointment date cannot be in the past")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate appointmentDate;
     
     @NotNull(message = "Appointment time is required")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime appointmentTime;
     
     @NotBlank(message = "Reason is required")
