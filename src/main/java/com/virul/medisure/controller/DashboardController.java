@@ -399,6 +399,76 @@ public class DashboardController {
     }
     
     /**
+     * Agent Leads Page
+     */
+    @GetMapping("/agent/leads")
+    public String agentLeads(Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Manage Leads");
+        
+        // Mock data for leads - in a real application, this would come from a Lead entity
+        model.addAttribute("leads", Collections.emptyList());
+        model.addAttribute("totalLeads", 0);
+        model.addAttribute("hotLeads", 0);
+        model.addAttribute("warmLeads", 0);
+        model.addAttribute("coldLeads", 0);
+        
+        return "agent/leads";
+    }
+    
+    /**
+     * Agent New Lead Page
+     */
+    @GetMapping("/agent/leads/new")
+    public String agentNewLead(Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Add New Lead");
+        
+        return "agent/new-lead";
+    }
+    
+    /**
+     * Agent Clients Page
+     */
+    @GetMapping("/agent/clients")
+    public String agentClients(Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "My Clients");
+        
+        // Get policy holders as clients
+        List<PolicyHolder> clients = policyHolderRepository.findByStatus(PolicyHolder.PolicyStatus.ACTIVE);
+        model.addAttribute("clients", clients);
+        model.addAttribute("totalClients", clients.size());
+        
+        return "agent/clients";
+    }
+    
+    /**
+     * Agent Commissions Page
+     */
+    @GetMapping("/agent/commissions")
+    public String agentCommissions(Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Commissions & Earnings");
+        
+        // Calculate commission data
+        List<PolicyHolder> activePolicies = policyHolderRepository.findByStatus(PolicyHolder.PolicyStatus.ACTIVE);
+        BigDecimal totalPremiums = activePolicies.stream()
+            .map(ph -> ph.getPolicy().getPremiumAmount())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        BigDecimal totalCommission = totalPremiums.multiply(new BigDecimal("0.05")); // 5% commission
+        BigDecimal monthlyCommission = totalCommission.divide(new BigDecimal("12"), 2, java.math.RoundingMode.HALF_UP);
+        
+        model.addAttribute("totalCommission", totalCommission);
+        model.addAttribute("monthlyCommission", monthlyCommission);
+        model.addAttribute("totalPolicies", activePolicies.size());
+        model.addAttribute("commissionRate", "5%");
+        
+        return "agent/commissions";
+    }
+    
+    /**
      * Pending Policy Approvals Page - DISABLED
      * Admin should only manage employees
      */
@@ -669,15 +739,68 @@ public class DashboardController {
     }
     
     /**
-     * Admin Claims Page - DISABLED
-     * Admin should only manage employees
+     * Admin Claims Page
      */
-    // @GetMapping("/admin/claims")
-    // public String adminClaimsPage(Model model, HttpServletRequest request) {
-    //     model.addAttribute("currentPath", request.getRequestURI());
-    //     model.addAttribute("pageTitle", "Review Claims");
-    //     return "admin/claims";
-    // }
+    @GetMapping("/admin/claims")
+    public String adminClaimsPage(Model model, HttpServletRequest request) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Review Claims");
+        
+        // Get all claims for admin review
+        List<Claim> allClaims = claimRepository.findAll().stream()
+            .sorted((c1, c2) -> c2.getCreatedAt().compareTo(c1.getCreatedAt()))
+            .toList();
+        model.addAttribute("claims", allClaims);
+        
+        // Get claims by status
+        long pendingClaims = claimRepository.countByStatus(Claim.ClaimStatus.SUBMITTED);
+        long underReview = claimRepository.countByStatus(Claim.ClaimStatus.UNDER_REVIEW);
+        long approved = claimRepository.countByStatus(Claim.ClaimStatus.APPROVED_BY_FINANCE);
+        long rejected = claimRepository.countByStatus(Claim.ClaimStatus.REJECTED);
+        
+        model.addAttribute("pendingClaims", pendingClaims);
+        model.addAttribute("underReview", underReview);
+        model.addAttribute("approved", approved);
+        model.addAttribute("rejected", rejected);
+        
+        return "admin/claims";
+    }
+    
+    /**
+     * Admin Reports Page
+     */
+    @GetMapping("/admin/reports")
+    public String adminReportsPage(Model model, HttpServletRequest request) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Reports & Analytics");
+        
+        // Get statistics for reports
+        long totalUsers = userRepository.count();
+        long totalPolicies = policyRepository.count();
+        long totalClaims = claimRepository.count();
+        long totalAppointments = appointmentRepository.count();
+        
+        model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("totalPolicies", totalPolicies);
+        model.addAttribute("totalClaims", totalClaims);
+        model.addAttribute("totalAppointments", totalAppointments);
+        
+        return "admin/reports";
+    }
+    
+    /**
+     * Admin New Policy Page
+     */
+    @GetMapping("/admin/policies/new")
+    public String adminNewPolicy(Model model, HttpServletRequest request) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Create New Policy");
+        
+        // Get available policy types
+        model.addAttribute("policyTypes", com.virul.medisure.model.Policy.PolicyType.values());
+        
+        return "admin/new-policy";
+    }
     
     private List<User.UserRole> getEmployeeRoles() {
         return Arrays.stream(User.UserRole.values())
@@ -814,5 +937,211 @@ public class DashboardController {
         }
 
         return "redirect:/doctor/appointments";
+    }
+    
+    /**
+     * Doctor Verifications Page
+     */
+    @GetMapping("/doctor/verifications")
+    public String doctorVerifications(Model model,
+                                      HttpServletRequest request,
+                                      Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Claim Verifications");
+        
+        // Get pending claims for verification
+        List<Claim> pendingClaims = Stream.concat(
+                claimRepository.findByStatus(Claim.ClaimStatus.SUBMITTED).stream(),
+                claimRepository.findByStatus(Claim.ClaimStatus.UNDER_REVIEW).stream()
+        )
+        .sorted(Comparator.comparing(Claim::getCreatedAt).reversed())
+        .collect(Collectors.toList());
+        
+        model.addAttribute("pendingClaims", pendingClaims);
+        model.addAttribute("hasDoctorProfile", false);
+        
+        if (authentication != null) {
+            Optional<User> userOpt = userRepository.findByEmail(authentication.getName());
+            if (userOpt.isPresent()) {
+                Optional<Doctor> doctorOpt = doctorRepository.findByUser(userOpt.get());
+                if (doctorOpt.isPresent()) {
+                    model.addAttribute("hasDoctorProfile", true);
+                    model.addAttribute("doctorName", doctorOpt.get().getUser().getFullName());
+                }
+            }
+        }
+        
+        return "doctor/verifications";
+    }
+    
+    /**
+     * Doctor Availability Page
+     */
+    @GetMapping("/doctor/availability")
+    public String doctorAvailability(Model model,
+                                     HttpServletRequest request,
+                                     Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Manage Availability");
+        model.addAttribute("hasDoctorProfile", false);
+        model.addAttribute("doctorAvailable", false);
+        
+        if (authentication != null) {
+            Optional<User> userOpt = userRepository.findByEmail(authentication.getName());
+            if (userOpt.isPresent()) {
+                Optional<Doctor> doctorOpt = doctorRepository.findByUser(userOpt.get());
+                if (doctorOpt.isPresent()) {
+                    Doctor doctor = doctorOpt.get();
+                    model.addAttribute("hasDoctorProfile", true);
+                    model.addAttribute("doctorName", doctor.getUser().getFullName());
+                    model.addAttribute("doctorAvailable", Boolean.TRUE.equals(doctor.getIsAvailable()));
+                }
+            }
+        }
+        
+        return "doctor/availability";
+    }
+    
+    /**
+     * Doctor Billing Page
+     */
+    @GetMapping("/doctor/billing")
+    public String doctorBilling(Model model,
+                                HttpServletRequest request,
+                                Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Billing & Payments");
+        model.addAttribute("hasDoctorProfile", false);
+        model.addAttribute("totalEarnings", 0);
+        model.addAttribute("pendingPayments", 0);
+        model.addAttribute("completedPayments", 0);
+        
+        if (authentication != null) {
+            Optional<User> userOpt = userRepository.findByEmail(authentication.getName());
+            if (userOpt.isPresent()) {
+                Optional<Doctor> doctorOpt = doctorRepository.findByUser(userOpt.get());
+                if (doctorOpt.isPresent()) {
+                    Doctor doctor = doctorOpt.get();
+                    model.addAttribute("hasDoctorProfile", true);
+                    model.addAttribute("doctorName", doctor.getUser().getFullName());
+                    
+                    // Get appointments for billing calculation
+                    List<Appointment> appointments = appointmentRepository.findByDoctor(doctor);
+                    long completedAppointments = appointments.stream()
+                        .filter(a -> a.getStatus() == Appointment.AppointmentStatus.COMPLETED)
+                        .count();
+                    
+                    model.addAttribute("totalEarnings", completedAppointments * 100); // $100 per appointment
+                    model.addAttribute("completedPayments", completedAppointments);
+                }
+            }
+        }
+        
+        return "doctor/billing";
+    }
+    
+    /**
+     * Notifications Page
+     */
+    @GetMapping("/notifications")
+    public String notifications(Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Notifications");
+        
+        // Mock notifications - in a real application, this would come from a Notification entity
+        model.addAttribute("notifications", Collections.emptyList());
+        model.addAttribute("unreadCount", 0);
+        
+        return "notifications";
+    }
+    
+    /**
+     * User Profile Page
+     */
+    @GetMapping("/profile")
+    public String profile(Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "My Profile");
+        
+        if (authentication != null) {
+            Optional<User> userOpt = userRepository.findByEmail(authentication.getName());
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                model.addAttribute("user", user);
+                model.addAttribute("userRole", user.getRole());
+            }
+        }
+        
+        return "profile";
+    }
+    
+    /**
+     * User Settings Page
+     */
+    @GetMapping("/settings")
+    public String settings(Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Settings");
+        
+        if (authentication != null) {
+            Optional<User> userOpt = userRepository.findByEmail(authentication.getName());
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                model.addAttribute("user", user);
+            }
+        }
+        
+        return "settings";
+    }
+    
+    /**
+     * View Claim Details
+     */
+    @GetMapping("/claims/{id}")
+    public String viewClaim(@PathVariable Long id, Model model, HttpServletRequest request, Authentication authentication) {
+        model.addAttribute("currentPath", request.getRequestURI());
+        model.addAttribute("pageTitle", "Claim Details");
+        
+        try {
+            Claim claim = claimRepository.findById(id).orElseThrow(() -> new RuntimeException("Claim not found"));
+            model.addAttribute("claim", claim);
+            
+            // Check if user has permission to view this claim
+            if (authentication != null) {
+                Optional<User> userOpt = userRepository.findByEmail(authentication.getName());
+                if (userOpt.isPresent()) {
+                    User user = userOpt.get();
+                    boolean canView = false;
+                    
+                    // Admin, claims manager, finance manager can view all claims
+                    if (user.getRole() == User.UserRole.ADMIN || 
+                        user.getRole() == User.UserRole.CLAIMS_MANAGER || 
+                        user.getRole() == User.UserRole.FINANCE_MANAGER) {
+                        canView = true;
+                    }
+                    // Policy holder can view their own claims
+                    else if (user.getRole() == User.UserRole.POLICY_HOLDER && 
+                             claim.getPolicyHolder() != null && 
+                             claim.getPolicyHolder().getUser().getId().equals(user.getId())) {
+                        canView = true;
+                    }
+                    // Doctor can view claims they need to verify
+                    else if (user.getRole() == User.UserRole.DOCTOR) {
+                        canView = true; // Doctors can view claims for verification
+                    }
+                    
+                    if (!canView) {
+                        model.addAttribute("error", "You don't have permission to view this claim.");
+                        return "error/403";
+                    }
+                }
+            }
+            
+        } catch (Exception e) {
+            model.addAttribute("error", "Claim not found: " + e.getMessage());
+            return "error/404";
+        }
+        
+        return "claim-details";
     }
 }

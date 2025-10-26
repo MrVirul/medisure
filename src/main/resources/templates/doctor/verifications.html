@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>Claim Verifications - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Claim Verifications</h1>
+            <p class="text-slate-600">Review and verify medical claims submitted by policy holders.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="/doctor/dashboard" 
+               class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Verification Status -->
+    <div th:if="${hasDoctorProfile}" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-blue-800">
+                <span class="font-semibold" th:text="${doctorName}">Dr. Smith</span>, you are authorized to verify medical claims.
+            </p>
+        </div>
+    </div>
+    
+    <div th:unless="${hasDoctorProfile}" class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 text-amber-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+            <p class="text-amber-800">
+                Your doctor profile is not linked to this account. Please contact the administrator.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Pending Claims -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+        <div class="px-6 py-4 border-b border-slate-200">
+            <h2 class="text-lg font-semibold text-slate-900">Pending Verifications</h2>
+            <p class="text-sm text-slate-600 mt-1">Claims waiting for your medical verification</p>
+        </div>
+        
+        <div class="divide-y divide-slate-200">
+            <div th:if="${#lists.isEmpty(pendingClaims)}" class="p-8 text-center">
+                <svg class="w-12 h-12 text-slate-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <h3 class="text-lg font-medium text-slate-900 mb-2">No Pending Verifications</h3>
+                <p class="text-slate-600">All claims have been reviewed. Check back later for new submissions.</p>
+            </div>
+            
+            <div th:each="claim : ${pendingClaims}" class="p-6 hover:bg-slate-50 transition">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-1"
+                            th:text="|Claim #CLM-${claim.id}|">Claim #CLM-001</h3>
+                        <p class="text-sm text-slate-600"
+                           th:text="|Patient: ${claim.policyHolder != null && claim.policyHolder.user != null ? claim.policyHolder.user.fullName : 'Unknown'}|">
+                            Patient: John Doe
+                        </p>
+                    </div>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full"
+                          th:classappend="${claim.status == T(com.virul.medisure.model.Claim$ClaimStatus).UNDER_REVIEW} ? ' text-amber-700 bg-amber-100' : ' text-blue-700 bg-blue-100'"
+                          th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(claim.status.name(), '_', ' ')))}">
+                        Under Review
+                    </span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <h4 class="font-medium text-slate-900 mb-2">Medical Information</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Diagnosis:</span>
+                                <span class="font-medium text-slate-900"
+                                      th:text="${claim.medicalDiagnosis != null ? claim.medicalDiagnosis : 'Not provided'}">
+                                    Hypertension
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Hospital:</span>
+                                <span class="font-medium text-slate-900"
+                                      th:text="${claim.hospitalName != null ? claim.hospitalName : 'Not specified'}">
+                                    General Hospital
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Treatment Date:</span>
+                                <span class="font-medium text-slate-900"
+                                      th:text="${claim.treatmentDate != null ? #temporals.format(claim.treatmentDate, 'MMM d, yyyy') : 'Not specified'}">
+                                    Jan 15, 2024
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium text-slate-900 mb-2">Claim Details</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Amount Claimed:</span>
+                                <span class="font-semibold text-slate-900"
+                                      th:text="${claim.amountClaimed != null ? 'LKR ' + claim.amountClaimed : 'Not specified'}">
+                                    LKR 25,000
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Claim Date:</span>
+                                <span class="font-medium text-slate-900"
+                                      th:text="${claim.claimDate != null ? #temporals.format(claim.claimDate, 'MMM d, yyyy') : 'Not specified'}">
+                                    Jan 20, 2024
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Submitted:</span>
+                                <span class="font-medium text-slate-900"
+                                      th:text="${claim.createdAt != null ? #temporals.format(claim.createdAt, 'MMM d, yyyy') : 'Not specified'}">
+                                    Jan 20, 2024
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="font-medium text-slate-900 mb-2">Description</h4>
+                    <p class="text-sm text-slate-700 bg-slate-50 p-3 rounded-lg"
+                       th:text="${claim.description != null ? claim.description : 'No description provided'}">
+                        Patient was admitted for treatment of hypertension and related complications.
+                    </p>
+                </div>
+                
+                <div class="flex gap-3">
+                    <a th:href="|/claims/${claim.id}|"
+                       class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm rounded-lg text-center hover:bg-primary-700 font-medium">
+                        View Full Details
+                    </a>
+                    <button class="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 font-medium">
+                        Verify Claim
+                    </button>
+                    <button class="px-4 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 font-medium">
+                        Request More Info
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

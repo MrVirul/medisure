@@ -116,14 +116,14 @@
                             Dr. John Doe
                         </h3>
                         <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full"
-                              th:classappend="${appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).PENDING} ? ' bg-amber-100 text-amber-700' :
-                                              (appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).SCHEDULED ? ' bg-blue-100 text-blue-700' :
-                                              (appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).CONFIRMED ? ' bg-green-100 text-green-700' :
-                                              (appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).COMPLETED ? ' bg-slate-100 text-slate-700' :
-                                              (appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).REJECTED ? ' bg-red-100 text-red-700' :
-                                              (appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).CANCELLED ? ' bg-red-100 text-red-700' :
-                                              ' bg-slate-200 text-slate-700')))))"
-                              th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(appointment.status.name(), '_', ' ')))}">
+                              th:classappend="${appointment.status != null and appointment.status.name() == 'PENDING'} ? ' bg-amber-100 text-amber-700' :
+                                              ${appointment.status != null and appointment.status.name() == 'SCHEDULED'} ? ' bg-blue-100 text-blue-700' :
+                                              ${appointment.status != null and appointment.status.name() == 'CONFIRMED'} ? ' bg-green-100 text-green-700' :
+                                              ${appointment.status != null and appointment.status.name() == 'COMPLETED'} ? ' bg-slate-100 text-slate-700' :
+                                              ${appointment.status != null and appointment.status.name() == 'REJECTED'} ? ' bg-red-100 text-red-700' :
+                                              ${appointment.status != null and appointment.status.name() == 'CANCELLED'} ? ' bg-red-100 text-red-700' :
+                                              ' bg-slate-200 text-slate-700'"
+                              th:text="${appointment.status != null ? #strings.capitalize(#strings.toLowerCase(#strings.replace(appointment.status.name(), '_', ' '))) : 'Unknown'}">
                             Pending
                         </span>
                     </div>
@@ -136,13 +136,13 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            <span th:text="${#temporals.format(appointment.appointmentDate, 'MMM d, yyyy')}">Jan 15, 2024</span>
+                            <span th:text="${appointment.appointmentDate != null ? #temporals.format(appointment.appointmentDate, 'MMM d, yyyy') : 'TBD'}">Jan 15, 2024</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <span th:text="${#temporals.format(appointment.appointmentTime, 'hh:mm a')}">10:00 AM</span>
+                            <span th:text="${appointment.appointmentTime != null ? #temporals.format(appointment.appointmentTime, 'hh:mm a') : 'TBD'}">10:00 AM</span>
                         </div>
                     </div>
                 </div>
@@ -150,20 +150,20 @@
             
             <div class="border-t border-slate-200 pt-4 mt-4">
                 <p class="text-sm font-medium text-slate-700 mb-1">Reason for Visit:</p>
-                <p class="text-sm text-slate-600 mb-3" th:text="${appointment.reason}">General checkup</p>
+                <p class="text-sm text-slate-600 mb-3" th:text="${appointment.reason != null ? appointment.reason : 'No reason provided'}">General checkup</p>
                 
                 <div th:if="${appointment.notes != null and !#strings.isEmpty(appointment.notes)}">
                     <p class="text-sm font-medium text-slate-700 mb-1">Additional Notes:</p>
                     <p class="text-sm text-slate-600 mb-3" th:text="${appointment.notes}">Notes</p>
                 </div>
                 
-                <div th:if="${appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).REJECTED and appointment.rejectionReason != null}"
+                <div th:if="${appointment.status != null and appointment.status.name() == 'REJECTED' and appointment.rejectionReason != null}"
                      class="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
                     <p class="text-sm font-medium text-red-700 mb-1">Rejection Reason:</p>
                     <p class="text-sm text-red-600" th:text="${appointment.rejectionReason}">Reason</p>
                 </div>
                 
-                <div th:if="${canBookAppointments and (appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).PENDING or appointment.status == T(com.virul.medisure.model.Appointment$AppointmentStatus).SCHEDULED)}"
+                <div th:if="${canBookAppointments and appointment.status != null and (appointment.status.name() == 'PENDING' or appointment.status.name() == 'SCHEDULED')}"
                      class="flex gap-3 mt-4">
                     <a th:href="@{'/policyholder/appointments/' + ${appointment.id} + '/edit'}"
                        class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition">

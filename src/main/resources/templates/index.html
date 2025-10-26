@@ -257,92 +257,138 @@
     </nav>
     
     <!-- Hero Section -->
-    <section id="home" class="gradient-bg min-h-screen flex items-center justify-center pt-16 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-            <div class="text-center">
-                <!-- Main Headline -->
-                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight" 
-                    x-data="{ show: false }" 
-                    x-init="setTimeout(() => show = true, 100)"
-                    x-show="show"
-                    x-transition:enter="transition ease-out duration-1000"
-                    x-transition:enter-start="opacity-0 transform scale-95"
-                    x-transition:enter-end="opacity-100 transform scale-100">
-                    Comprehensive Health Coverage<br>
-                    <span class="bg-gradient-to-r from-orange-400 to-orange-300 bg-clip-text text-transparent">You Can Trust</span>
-                </h1>
+    <section id="home" class="min-h-screen bg-white pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Column - Text Content -->
+                <div class="space-y-8">
+                    <!-- Trust Badge -->
+                    <div class="flex items-center space-x-2 text-sm text-slate-600"
+                         x-data="{ show: false }" 
+                         x-init="setTimeout(() => show = true, 100)"
+                         x-show="show"
+                         x-transition:enter="transition ease-out duration-1000"
+                         x-transition:enter-start="opacity-0 transform translateY(20px)"
+                         x-transition:enter-end="opacity-100 transform translateY(0)">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-yellow-500"></i>
+                        <span class="font-medium">Trusted by 50,000+ Families</span>
+                    </div>
+                    
+                    <!-- Main Headline -->
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight"
+                        x-data="{ show: false }" 
+                        x-init="setTimeout(() => show = true, 200)"
+                        x-show="show"
+                        x-transition:enter="transition ease-out duration-1000"
+                        x-transition:enter-start="opacity-0 transform translateY(20px)"
+                        x-transition:enter-end="opacity-100 transform translateY(0)">
+                        Your Health,<br>
+                        <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Our Priority</span>
+                    </h1>
+                    
+                    <!-- Description -->
+                    <p class="text-lg text-slate-600 leading-relaxed max-w-lg"
+                       x-data="{ show: false }" 
+                       x-init="setTimeout(() => show = true, 300)"
+                       x-show="show"
+                       x-transition:enter="transition ease-out duration-1000"
+                       x-transition:enter-start="opacity-0 transform translateY(20px)"
+                       x-transition:enter-end="opacity-100 transform translateY(0)">
+                        Experience healthcare coverage that truly cares. Fast claims, transparent pricing, and personalized support when you need it most.
+                    </p>
+                    
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4"
+                         x-data="{ show: false }" 
+                         x-init="setTimeout(() => show = true, 400)"
+                         x-show="show"
+                         x-transition:enter="transition ease-out duration-1000"
+                         x-transition:enter-start="opacity-0 transform translateY(20px)"
+                         x-transition:enter-end="opacity-100 transform translateY(0)">
+                        <a href="/auth/register" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 inline-flex items-center justify-center space-x-2">
+                            <span>Explore Plans</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#contact" class="bg-white text-purple-600 border-2 border-purple-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-purple-50 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center space-x-2">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            <span>Talk to Expert</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Feature Blocks -->
+                    <div class="grid grid-cols-3 gap-6 pt-8"
+                         x-data="{ show: false }" 
+                         x-init="setTimeout(() => show = true, 500)"
+                         x-show="show"
+                         x-transition:enter="transition ease-out duration-1000"
+                         x-transition:enter-start="opacity-0 transform translateY(20px)"
+                         x-transition:enter-end="opacity-100 transform translateY(0)">
+                        <!-- 24/7 Support -->
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="check" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-900">24/7</div>
+                            <div class="text-sm text-slate-600">Support</div>
+                        </div>
+                        
+                        <!-- 48hr Fast Claims -->
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-900">48hr</div>
+                            <div class="text-sm text-slate-600">Fast Claims</div>
+                        </div>
+                        
+                        <!-- 500+ Hospitals -->
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="building" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-900">500+</div>
+                            <div class="text-sm text-slate-600">Hospitals</div>
+                        </div>
+                    </div>
+                </div>
                 
-                <!-- Subheadline -->
-                <p class="text-xl sm:text-2xl text-blue-100 mb-12 max-w-3xl mx-auto"
-                   x-data="{ show: false }" 
-                   x-init="setTimeout(() => show = true, 300)"
-                   x-show="show"
-                   x-transition:enter="transition ease-out duration-1000"
-                   x-transition:enter-start="opacity-0 transform translateY(20px)"
-                   x-transition:enter-end="opacity-100 transform translateY(0)">
-                    Protect your health and your family's future with our comprehensive insurance plans. 
-                    Fast claims processing, transparent pricing, and 24/7 expert support.
-                </p>
-                
-                <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+                <!-- Right Column - Image with Overlays -->
+                <div class="relative"
                      x-data="{ show: false }" 
-                     x-init="setTimeout(() => show = true, 500)"
+                     x-init="setTimeout(() => show = true, 600)"
                      x-show="show"
                      x-transition:enter="transition ease-out duration-1000"
-                     x-transition:enter-start="opacity-0 transform translateY(20px)"
-                     x-transition:enter-end="opacity-100 transform translateY(0)">
-                    <a href="/auth/register" class="btn-gradient text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl inline-flex items-center space-x-2">
-                        <span>Get Started Free</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
-                    <a href="#plans" class="btn-outline bg-white bg-opacity-10 backdrop-blur-md text-white border-2 border-white px-8 py-4 rounded-xl font-bold text-lg inline-flex items-center space-x-2">
-                        <span>View Plans</span>
-                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
-                    </a>
-                </div>
-                
-                <!-- Trust Badges -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
-                    <div class="trust-badge bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 border border-white border-opacity-20">
-                        <div class="flex items-center justify-center mb-3">
-                            <i data-lucide="shield-check" class="w-8 h-8 text-green-400"></i>
+                     x-transition:enter-start="opacity-0 transform translateX(20px)"
+                     x-transition:enter-end="opacity-100 transform translateX(0)">
+                    <!-- Main Image -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Friendly healthcare professionals providing quality care" 
+                             class="w-full h-[600px] object-cover">
+                        
+                        <!-- Top Right Overlay Badge -->
+                        <div class="absolute top-6 right-6 bg-orange-500/90 backdrop-blur-sm rounded-xl px-4 py-3 text-white">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="clock" class="w-5 h-5"></i>
+                                <div>
+                                    <div class="text-lg font-bold">10min</div>
+                                    <div class="text-xs opacity-90">Avg. Response</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-2xl font-bold text-white mb-1">Trusted</div>
-                        <div class="text-blue-100 text-sm">Licensed Provider</div>
-                    </div>
-                    
-                    <div class="trust-badge bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 border border-white border-opacity-20">
-                        <div class="flex items-center justify-center mb-3">
-                            <i data-lucide="clock" class="w-8 h-8 text-orange-400"></i>
+                        
+                        <!-- Bottom Right Overlay Badge -->
+                        <div class="absolute bottom-6 right-6 bg-green-500/90 backdrop-blur-sm rounded-xl px-4 py-3 text-white">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                                <div>
+                                    <div class="text-lg font-bold">98%</div>
+                                    <div class="text-xs opacity-90">Satisfaction Rate</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-2xl font-bold text-white mb-1">48 Hours</div>
-                        <div class="text-blue-100 text-sm">Claim Processing</div>
-                    </div>
-                    
-                    <div class="trust-badge bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 border border-white border-opacity-20">
-                        <div class="flex items-center justify-center mb-3">
-                            <i data-lucide="headset" class="w-8 h-8 text-blue-400"></i>
-                        </div>
-                        <div class="text-2xl font-bold text-white mb-1">24/7</div>
-                        <div class="text-blue-100 text-sm">Support Available</div>
-                    </div>
-                    
-                    <div class="trust-badge bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 border border-white border-opacity-20">
-                        <div class="flex items-center justify-center mb-3">
-                            <i data-lucide="circle-check" class="w-8 h-8 text-green-400"></i>
-                        </div>
-                        <div class="text-2xl font-bold text-white mb-1">100%</div>
-                        <div class="text-blue-100 text-sm">Digital Process</div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Scroll Indicator -->
-            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-                <a href="#stats" class="scroll-indicator block">
-                    <i data-lucide="chevron-down" class="w-8 h-8 text-white"></i>
-                </a>
             </div>
         </div>
     </section>
@@ -400,8 +446,14 @@
     </section>
     
     <!-- How It Works Section -->
-    <section id="how-it-works" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="how-it-works" class="py-20 bg-white relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-20 left-10 w-64 h-64 bg-gradient-to-br from-blue-100 to-transparent rounded-full"></div>
+            <div class="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-tl from-orange-100 to-transparent rounded-full"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16 fade-in">
                 <h2 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">How It Works</h2>
                 <p class="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -411,10 +463,12 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 xl:gap-12 max-w-6xl mx-auto">
                 <!-- Step 1 -->
-                <div class="fade-in timeline-connector bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div class="fade-in timeline-connector bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
                     <div class="text-center">
-                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300">
+                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300 relative">
                             <i data-lucide="user-plus" class="w-12 h-12 lg:w-14 lg:h-14 text-white"></i>
+                            <div class="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-4 text-lg font-bold shadow-md">1</div>
                         <h3 class="text-xl lg:text-2xl font-bold text-slate-900 mb-3">Register Account</h3>
@@ -423,10 +477,12 @@
                 </div>
                 
                 <!-- Step 2 -->
-                <div class="fade-in timeline-connector bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div class="fade-in timeline-connector bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
                     <div class="text-center">
-                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300">
+                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300 relative">
                             <i data-lucide="clipboard-list" class="w-12 h-12 lg:w-14 lg:h-14 text-white"></i>
+                            <div class="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-4 text-lg font-bold shadow-md">2</div>
                         <h3 class="text-xl lg:text-2xl font-bold text-slate-900 mb-3">Choose Policy</h3>
@@ -435,10 +491,12 @@
                 </div>
                 
                 <!-- Step 3 -->
-                <div class="fade-in timeline-connector bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div class="fade-in timeline-connector bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
                     <div class="text-center">
-                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300">
+                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300 relative">
                             <i data-lucide="file-text" class="w-12 h-12 lg:w-14 lg:h-14 text-white"></i>
+                            <div class="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-4 text-lg font-bold shadow-md">3</div>
                         <h3 class="text-xl lg:text-2xl font-bold text-slate-900 mb-3">Complete Application</h3>
@@ -447,10 +505,12 @@
                 </div>
                 
                 <!-- Step 4 -->
-                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-green-600"></div>
                     <div class="text-center">
-                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-green-600 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300">
+                        <div class="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-green-600 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl transform transition-transform hover:scale-110 duration-300 relative">
                             <i data-lucide="shield-check" class="w-12 h-12 lg:w-14 lg:h-14 text-white"></i>
+                            <div class="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-4 text-lg font-bold shadow-md">4</div>
                         <h3 class="text-xl lg:text-2xl font-bold text-slate-900 mb-3">Get Covered</h3>
@@ -461,9 +521,80 @@
         </div>
     </section>
     
+    <!-- Insurance Benefits Section -->
+    <section class="py-20 bg-white relative overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/90 to-white/95 z-10"></div>
+            <img src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 alt="Happy family with health insurance protection" 
+                 class="w-full h-full object-cover opacity-20">
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">Comprehensive Coverage</h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+                    From routine checkups to emergency care, we've got you covered with comprehensive health insurance plans
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+                <!-- Coverage 1 -->
+                <div class="fade-in bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="heart-pulse" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 text-center">Preventive Care</h3>
+                    <p class="text-slate-600 text-center">Annual checkups, vaccinations, and screenings at no extra cost</p>
+                </div>
+                
+                <!-- Coverage 2 -->
+                <div class="fade-in bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="ambulance" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 text-center">Emergency Care</h3>
+                    <p class="text-slate-600 text-center">24/7 emergency coverage with cashless treatment at network hospitals</p>
+                </div>
+                
+                <!-- Coverage 3 -->
+                <div class="fade-in bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="pill" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 text-center">Prescription Drugs</h3>
+                    <p class="text-slate-600 text-center">Affordable prescription medications with our pharmacy network</p>
+                </div>
+                
+                <!-- Coverage 4 -->
+                <div class="fade-in bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/50">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="heart-pulse" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 text-center">Mental Health</h3>
+                    <p class="text-slate-600 text-center">Comprehensive mental health coverage including therapy and counseling</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Why Choose Us Section -->
-    <section class="py-20 bg-gradient-to-b from-slate-50 to-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-20 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-100 to-transparent"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-orange-100 to-transparent rounded-full"></div>
+        </div>
+        
+        <!-- Decorative Medical Elements -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-green-200 to-transparent rounded-full blur-xl"></div>
+            <div class="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-tl from-blue-200 to-transparent rounded-full blur-xl"></div>
+            <div class="absolute top-1/2 left-10 w-24 h-24 bg-gradient-to-br from-orange-200 to-transparent rounded-full blur-lg"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16 fade-in">
                 <h2 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">Why Choose MediSure</h2>
                 <p class="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -473,89 +604,123 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-10 max-w-7xl mx-auto">
                 <!-- Feature 1 -->
-                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-orange-200 min-h-[280px]">
-                    <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
-                        <i data-lucide="zap" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-orange-200 min-h-[320px] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
+                            <i data-lucide="zap" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Fast Claim Processing</h3>
+                        <p class="text-slate-600 text-lg leading-relaxed">
+                            Get your claims approved within 24-48 hours. No lengthy paperwork or endless waiting.
+                        </p>
                     </div>
-                    <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Fast Claim Processing</h3>
-                    <p class="text-slate-600 text-lg leading-relaxed">
-                        Get your claims approved within 24-48 hours. No lengthy paperwork or endless waiting.
-                    </p>
                 </div>
                 
                 <!-- Feature 2 -->
-                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-blue-200 min-h-[280px]">
-                    <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
-                        <i data-lucide="network" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-blue-200 min-h-[320px] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
+                            <i data-lucide="network" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Extensive Network</h3>
+                        <p class="text-slate-600 text-lg leading-relaxed">
+                            Access to 500+ network doctors and hospitals across the country for cashless treatment.
+                        </p>
                     </div>
-                    <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Extensive Network</h3>
-                    <p class="text-slate-600 text-lg leading-relaxed">
-                        Access to 500+ network doctors and hospitals across the country for cashless treatment.
-                    </p>
                 </div>
                 
                 <!-- Feature 3 -->
-                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-green-200 min-h-[280px]">
-                    <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-600 to-green-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
-                        <i data-lucide="shield-check" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-green-200 min-h-[320px] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-100 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-600 to-green-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
+                            <i data-lucide="shield-check" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Transparent Pricing</h3>
+                        <p class="text-slate-600 text-lg leading-relaxed">
+                            No hidden fees, no surprises. What you see is what you pay. Clear, upfront pricing.
+                        </p>
                     </div>
-                    <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Transparent Pricing</h3>
-                    <p class="text-slate-600 text-lg leading-relaxed">
-                        No hidden fees, no surprises. What you see is what you pay. Clear, upfront pricing.
-                    </p>
                 </div>
                 
                 <!-- Feature 4 -->
-                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-purple-200 min-h-[280px]">
-                    <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-purple-600 to-purple-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
-                        <i data-lucide="smartphone" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-purple-200 min-h-[320px] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-100 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-purple-600 to-purple-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
+                            <i data-lucide="smartphone" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Digital First</h3>
+                        <p class="text-slate-600 text-lg leading-relaxed">
+                            Manage everything online - from policy purchase to claims. Your health insurance, your way.
+                        </p>
                     </div>
-                    <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Digital First</h3>
-                    <p class="text-slate-600 text-lg leading-relaxed">
-                        Manage everything online - from policy purchase to claims. Your health insurance, your way.
-                    </p>
                 </div>
                 
                 <!-- Feature 5 -->
-                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-orange-200 min-h-[280px]">
-                    <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-600 to-orange-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
-                        <i data-lucide="headset" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-orange-200 min-h-[320px] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-600 to-orange-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
+                            <i data-lucide="headset" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Expert Support</h3>
+                        <p class="text-slate-600 text-lg leading-relaxed">
+                            24/7 customer service with real people who care. Get help whenever you need it.
+                        </p>
                     </div>
-                    <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Expert Support</h3>
-                    <p class="text-slate-600 text-lg leading-relaxed">
-                        24/7 customer service with real people who care. Get help whenever you need it.
-                    </p>
                 </div>
                 
                 <!-- Feature 6 -->
-                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-blue-200 min-h-[280px]">
-                    <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
-                        <i data-lucide="heart-handshake" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                <div class="fade-in bg-white rounded-2xl p-8 lg:p-10 shadow-lg hover:shadow-2xl card-hover transition-all duration-300 border border-gray-100 hover:border-blue-200 min-h-[320px] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-110 duration-300">
+                            <i data-lucide="heart-handshake" class="w-10 h-10 lg:w-12 lg:h-12 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Trusted Platform</h3>
+                        <p class="text-slate-600 text-lg leading-relaxed" th:text="'Join ' + ${stats.totalUsers} + '+ satisfied customers who trust us with their health.'">
+                            Join thousands of satisfied customers who trust us with their health.
+                        </p>
                     </div>
-                    <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Trusted Platform</h3>
-                    <p class="text-slate-600 text-lg leading-relaxed" th:text="'Join ' + ${stats.totalUsers} + '+ satisfied customers who trust us with their health.'">
-                        Join thousands of satisfied customers who trust us with their health.
-                    </p>
                 </div>
             </div>
         </div>
     </section>
     
     <!-- Call to Action Section -->
-    <section id="contact" class="gradient-bg py-20">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section id="contact" class="relative py-20 overflow-hidden">
+        <!-- Beautiful Background Image -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/95 via-blue-800/90 to-blue-700/95 z-10"></div>
+            <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 alt="Trustworthy medical team providing secure healthcare coverage" 
+                 class="w-full h-full object-cover">
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute inset-0 z-20 overflow-hidden">
+            <div class="absolute top-10 left-10 w-20 h-20 bg-white/5 backdrop-blur-sm rounded-full animate-float"></div>
+            <div class="absolute top-32 right-16 w-16 h-16 bg-white/5 backdrop-blur-sm rounded-full animate-float-delayed"></div>
+            <div class="absolute bottom-20 left-20 w-12 h-12 bg-white/5 backdrop-blur-sm rounded-full animate-float-slow"></div>
+            <div class="absolute bottom-32 right-10 w-24 h-24 bg-white/5 backdrop-blur-sm rounded-full animate-float"></div>
+        </div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-30">
             <div class="fade-in">
                 <h2 class="text-4xl sm:text-5xl font-bold text-white mb-6">Ready to Protect Your Health?</h2>
-                <p class="text-xl text-blue-100 mb-8" th:text="'Join ' + ${stats.activePolicyHolders} + '+ families who trust us with their health protection'">
+                <p class="text-xl text-blue-100 mb-8 leading-relaxed" th:text="'Join ' + ${stats.activePolicyHolders} + '+ families who trust us with their health protection'">
                     Join thousands of families who trust us with their health protection
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                    <a href="/auth/register" class="btn-gradient text-white px-10 py-5 rounded-xl font-bold text-lg shadow-xl inline-flex items-center space-x-2">
+                    <a href="/auth/register" class="btn-gradient text-white px-10 py-5 rounded-xl font-bold text-lg shadow-xl inline-flex items-center space-x-2 hover:scale-105 transition-transform">
                         <i data-lucide="user-plus" class="w-6 h-6"></i>
                         <span>Create Free Account</span>
                     </a>
-                    <a href="/auth/login" class="btn-outline bg-white bg-opacity-10 backdrop-blur-md text-white border-2 border-white px-10 py-5 rounded-xl font-bold text-lg inline-flex items-center space-x-2">
+                    <a href="/auth/login" class="btn-outline bg-white bg-opacity-10 backdrop-blur-md text-white border-2 border-white px-10 py-5 rounded-xl font-bold text-lg inline-flex items-center space-x-2 hover:scale-105 transition-transform">
                         <i data-lucide="message-circle" class="w-6 h-6"></i>
                         <span>Talk to an Agent</span>
                     </a>
@@ -563,15 +728,19 @@
                 
                 <!-- Trust Seals -->
                 <div class="flex flex-wrap items-center justify-center gap-8">
-                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md px-6 py-3 rounded-lg">
+                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md px-6 py-3 rounded-lg hover:bg-opacity-20 transition-all">
                         <i data-lucide="shield-check" class="w-6 h-6 text-green-400"></i>
                         <span class="text-white font-semibold">SSL Secured</span>
                     </div>
-                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md px-6 py-3 rounded-lg">
-                        <i data-lucide="check-circle-2" class="w-6 h-6 text-green-400"></i>
-                        <span class="text-white font-semibold">Verified Platform</span>
+                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md px-6 py-3 rounded-lg hover:bg-opacity-20 transition-all">
+                        <i data-lucide="heart-handshake" class="w-6 h-6 text-pink-400"></i>
+                        <span class="text-white font-semibold">Friendly Service</span>
                     </div>
-                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md px-6 py-3 rounded-lg">
+                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md px-6 py-3 rounded-lg hover:bg-opacity-20 transition-all">
+                        <i data-lucide="lock" class="w-6 h-6 text-blue-400"></i>
+                        <span class="text-white font-semibold">Data Protected</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-md px-6 py-3 rounded-lg hover:bg-opacity-20 transition-all">
                         <i data-lucide="award" class="w-6 h-6 text-orange-400"></i>
                         <span class="text-white font-semibold">Licensed Provider</span>
                     </div>

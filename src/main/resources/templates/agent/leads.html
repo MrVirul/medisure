@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>Manage Leads - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Manage Leads</h1>
+            <p class="text-slate-600">Track and manage your sales leads and prospects.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="/agent/leads/new" 
+               class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Add New Lead
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Lead Statistics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-white/80 mb-1">Total Leads</p>
+            <p class="text-3xl font-bold" th:text="${totalLeads}">0</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-white/80 mb-1">Hot Leads</p>
+            <p class="text-3xl font-bold" th:text="${hotLeads}">0</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-white/80 mb-1">Warm Leads</p>
+            <p class="text-3xl font-bold" th:text="${warmLeads}">0</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-white/80 mb-1">Cold Leads</p>
+            <p class="text-3xl font-bold" th:text="${coldLeads}">0</p>
+        </div>
+    </div>
+    
+    <!-- Leads List -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+        <div class="px-6 py-4 border-b border-slate-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-slate-900">All Leads</h2>
+                <div class="flex items-center gap-3">
+                    <select class="text-sm border-slate-300 rounded-lg">
+                        <option>All Status</option>
+                        <option>Hot</option>
+                        <option>Warm</option>
+                        <option>Cold</option>
+                    </select>
+                    <input type="text" placeholder="Search leads..." 
+                           class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+                </div>
+            </div>
+        </div>
+        
+        <div class="divide-y divide-slate-200">
+            <div th:if="${#lists.isEmpty(leads)}" class="p-8 text-center">
+                <svg class="w-12 h-12 text-slate-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <h3 class="text-lg font-medium text-slate-900 mb-2">No Leads Found</h3>
+                <p class="text-slate-600 mb-4">Start building your lead pipeline by adding your first lead.</p>
+                <a href="/agent/leads/new" 
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Add Your First Lead
+                </a>
+            </div>
+            
+            <!-- Sample Lead Items -->
+            <div class="p-6 hover:bg-slate-50 transition">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                            SW
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-900">Sarah Williams</h3>
+                            <p class="text-sm text-slate-600">Looking for family coverage</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-600 mt-1">
+                                <span>📧 sarah.w@email.com</span>
+                                <span>📞 (555) 123-4567</span>
+                                <span>📍 Colombo, Sri Lanka</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">Hot</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <p class="text-xs text-slate-600 mb-1">Interest Level</p>
+                        <p class="text-sm font-medium text-slate-900">Very High</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-600 mb-1">Budget Range</p>
+                        <p class="text-sm font-medium text-slate-900">LKR 5,000 - 10,000/month</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-600 mb-1">Last Contact</p>
+                        <p class="text-sm font-medium text-slate-900">2 days ago</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700 font-medium">
+                        Contact Now
+                    </button>
+                    <button class="px-4 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 font-medium">
+                        View Details
+                    </button>
+                    <button class="px-4 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 font-medium">
+                        Schedule Follow-up
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6 hover:bg-slate-50 transition">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-semibold">
+                            DM
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-900">David Martinez</h3>
+                            <p class="text-sm text-slate-600">Individual health insurance</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-600 mt-1">
+                                <span>📧 david.m@email.com</span>
+                                <span>📞 (555) 987-6543</span>
+                                <span>📍 Kandy, Sri Lanka</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-full">Warm</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <p class="text-xs text-slate-600 mb-1">Interest Level</p>
+                        <p class="text-sm font-medium text-slate-900">Medium</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-600 mb-1">Budget Range</p>
+                        <p class="text-sm font-medium text-slate-900">LKR 2,000 - 5,000/month</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-600 mb-1">Last Contact</p>
+                        <p class="text-sm font-medium text-slate-900">1 week ago</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700 font-medium">
+                        Contact Now
+                    </button>
+                    <button class="px-4 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 font-medium">
+                        View Details
+                    </button>
+                    <button class="px-4 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 font-medium">
+                        Schedule Follow-up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

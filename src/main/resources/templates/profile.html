@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>My Profile - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">My Profile</h1>
+            <p class="text-slate-600">Manage your personal information and account settings.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="/settings" 
+               class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Settings
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Profile Overview -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+        <div class="flex items-start gap-6">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold"
+                 th:text="${user != null ? #strings.substring(user.fullName, 0, 2).toUpperCase() : 'U'}">
+                JD
+            </div>
+            <div class="flex-1">
+                <h2 class="text-2xl font-bold text-slate-900 mb-1"
+                    th:text="${user != null ? user.fullName : 'User'}">
+                    John Doe
+                </h2>
+                <p class="text-slate-600 mb-2"
+                   th:text="${user != null ? user.email : 'user@example.com'}">
+                    john.doe@email.com
+                </p>
+                <div class="flex items-center gap-4 text-sm text-slate-600">
+                    <span th:if="${user != null && user.phone != null}"
+                          th:text="|📞 ${user.phone}|">📞 (555) 123-4567</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
+                          th:text="${userRole != null ? #strings.capitalize(#strings.toLowerCase(#strings.replace(userRole.name(), '_', ' '))) : 'User'}">
+                        Policy Holder
+                    </span>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-slate-600">Member Since</p>
+                <p class="font-semibold text-slate-900"
+                   th:text="${user != null && user.createdAt != null ? #temporals.format(user.createdAt, 'MMM yyyy') : 'Jan 2024'}">
+                    Jan 2024
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Information -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Personal Information -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Personal Information</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                    <p class="text-slate-900"
+                       th:text="${user != null ? user.fullName : 'Not provided'}">
+                        John Doe
+                    </p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                    <p class="text-slate-900"
+                       th:text="${user != null ? user.email : 'Not provided'}">
+                        john.doe@email.com
+                    </p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                    <p class="text-slate-900"
+                       th:text="${user != null && user.phone != null ? user.phone : 'Not provided'}">
+                        (555) 123-4567
+                    </p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">User Role</label>
+                    <p class="text-slate-900"
+                       th:text="${userRole != null ? #strings.capitalize(#strings.toLowerCase(#strings.replace(userRole.name(), '_', ' '))) : 'Not assigned'}">
+                        Policy Holder
+                    </p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Account Status</label>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Active
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Account Statistics -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Account Statistics</h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div>
+                        <p class="text-sm font-medium text-slate-700">Total Claims</p>
+                        <p class="text-xs text-slate-600">All time</p>
+                    </div>
+                    <p class="text-lg font-semibold text-slate-900">5</p>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div>
+                        <p class="text-sm font-medium text-slate-700">Active Policies</p>
+                        <p class="text-xs text-slate-600">Current</p>
+                    </div>
+                    <p class="text-lg font-semibold text-slate-900">1</p>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div>
+                        <p class="text-sm font-medium text-slate-700">Appointments</p>
+                        <p class="text-xs text-slate-600">This year</p>
+                    </div>
+                    <p class="text-lg font-semibold text-slate-900">3</p>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div>
+                        <p class="text-sm font-medium text-slate-700">Total Payments</p>
+                        <p class="text-xs text-slate-600">All time</p>
+                    </div>
+                    <p class="text-lg font-semibold text-slate-900">LKR 7,500</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mt-6">
+        <h3 class="text-lg font-semibold text-slate-900 mb-4">Quick Actions</h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="/settings" 
+               class="flex items-center gap-3 p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-medium text-slate-900">Account Settings</p>
+                    <p class="text-xs text-slate-600">Update preferences</p>
+                </div>
+            </a>
+            
+            <a href="/policyholder/claims/new" 
+               class="flex items-center gap-3 p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-medium text-slate-900">File Claim</p>
+                    <p class="text-xs text-slate-600">Submit new claim</p>
+                </div>
+            </a>
+            
+            <a href="/policyholder/appointments/book" 
+               class="flex items-center gap-3 p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-medium text-slate-900">Book Appointment</p>
+                    <p class="text-xs text-slate-600">Schedule visit</p>
+                </div>
+            </a>
+            
+            <a href="/notifications" 
+               class="flex items-center gap-3 p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.5 19.5a1.5 1.5 0 01-1.5-1.5V6a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 6v12a1.5 1.5 0 01-1.5 1.5h-15z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-medium text-slate-900">Notifications</p>
+                    <p class="text-xs text-slate-600">View alerts</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>Billing & Payments - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Billing & Payments</h1>
+            <p class="text-slate-600">Track your earnings and payment history.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="/doctor/dashboard" 
+               class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Current Status -->
+    <div th:if="${hasDoctorProfile}" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-slate-900 mb-1">Payment Status</h2>
+                <p class="text-slate-600" th:text="|Dr. ${doctorName}|">Dr. Smith</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-slate-600">Next Payment</p>
+                <p class="text-lg font-semibold text-slate-900">March 1, 2024</p>
+            </div>
+        </div>
+    </div>
+    
+    <div th:unless="${hasDoctorProfile}" class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 text-amber-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+            <p class="text-amber-800">
+                Your doctor profile is not linked to this account. Please contact the administrator.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Earnings Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-white/80 mb-1">Total Earnings</p>
+            <p class="text-3xl font-bold" th:text="|LKR ${totalEarnings}|">LKR 0</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-white/80 mb-1">Completed Appointments</p>
+            <p class="text-3xl font-bold" th:text="${completedPayments}">0</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-white/80 mb-1">Pending Payments</p>
+            <p class="text-3xl font-bold" th:text="${pendingPayments}">0</p>
+        </div>
+    </div>
+    
+    <!-- Payment History -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+        <div class="px-6 py-4 border-b border-slate-200">
+            <h2 class="text-lg font-semibold text-slate-900">Payment History</h2>
+            <p class="text-sm text-slate-600 mt-1">Your recent payment transactions</p>
+        </div>
+        
+        <div class="divide-y divide-slate-200">
+            <div class="p-6 hover:bg-slate-50 transition">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-semibold text-slate-900">February 2024 Payment</h3>
+                        <p class="text-sm text-slate-600">Completed appointments: 12</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-semibold text-slate-900">LKR 1,200</p>
+                        <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Paid</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-slate-600">
+                    <span>Payment Date: Feb 28, 2024</span>
+                    <span>Method: Bank Transfer</span>
+                    <span>Reference: PAY-2024-002</span>
+                </div>
+            </div>
+            
+            <div class="p-6 hover:bg-slate-50 transition">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-semibold text-slate-900">January 2024 Payment</h3>
+                        <p class="text-sm text-slate-600">Completed appointments: 8</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-semibold text-slate-900">LKR 800</p>
+                        <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Paid</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-slate-600">
+                    <span>Payment Date: Jan 31, 2024</span>
+                    <span>Method: Bank Transfer</span>
+                    <span>Reference: PAY-2024-001</span>
+                </div>
+            </div>
+            
+            <div class="p-6 hover:bg-slate-50 transition">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-semibold text-slate-900">December 2023 Payment</h3>
+                        <p class="text-sm text-slate-600">Completed appointments: 15</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-semibold text-slate-900">LKR 1,500</p>
+                        <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Paid</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-slate-600">
+                    <span>Payment Date: Dec 31, 2023</span>
+                    <span>Method: Bank Transfer</span>
+                    <span>Reference: PAY-2023-012</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Payment Settings -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mt-6">
+        <h3 class="text-lg font-semibold text-slate-900 mb-4">Payment Settings</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Bank Account</label>
+                <input type="text" value="**** **** **** 1234" readonly
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-slate-600">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Payment Frequency</label>
+                <select class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <option>Monthly</option>
+                    <option>Bi-weekly</option>
+                    <option>Weekly</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <button class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium">
+                Update Payment Settings
+            </button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

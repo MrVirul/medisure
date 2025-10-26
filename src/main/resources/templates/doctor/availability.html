@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+<head>
+    <title>Manage Availability - MediSure</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<div layout:fragment="page-header" class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Manage Availability</h1>
+            <p class="text-slate-600">Set your availability schedule for patient appointments.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="/doctor/dashboard" 
+               class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div layout:fragment="content">
+    
+    <!-- Current Status -->
+    <div th:if="${hasDoctorProfile}" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-slate-900 mb-1">Current Status</h2>
+                <p class="text-slate-600" th:text="|Dr. ${doctorName}|">Dr. Smith</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-slate-700">Availability:</span>
+                <div class="flex items-center gap-2">
+                    <div th:classappend="${doctorAvailable} ? 'bg-green-100' : 'bg-red-100'"
+                         class="w-3 h-3 rounded-full"
+                         th:class="${doctorAvailable} ? 'bg-green-500' : 'bg-red-500'"></div>
+                    <span th:classappend="${doctorAvailable} ? 'text-green-700' : 'text-red-700'"
+                          class="text-sm font-medium"
+                          th:text="${doctorAvailable} ? 'Available' : 'Unavailable'">Available</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:unless="${hasDoctorProfile}" class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 text-amber-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+            <p class="text-amber-800">
+                Your doctor profile is not linked to this account. Please contact the administrator.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Availability Settings -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Quick Toggle -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Quick Toggle</h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div>
+                        <h4 class="font-medium text-slate-900">General Availability</h4>
+                        <p class="text-sm text-slate-600">Accept new appointment requests</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div>
+                        <h4 class="font-medium text-slate-900">Emergency Consultations</h4>
+                        <p class="text-sm text-slate-600">Available for urgent cases</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Weekly Schedule -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Weekly Schedule</h3>
+            
+            <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                    <span class="font-medium text-slate-700">Monday</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-slate-600">9:00 AM - 5:00 PM</span>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                    <span class="font-medium text-slate-700">Tuesday</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-slate-600">9:00 AM - 5:00 PM</span>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                    <span class="font-medium text-slate-700">Wednesday</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-slate-600">9:00 AM - 5:00 PM</span>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                    <span class="font-medium text-slate-700">Thursday</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-slate-600">9:00 AM - 5:00 PM</span>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                    <span class="font-medium text-slate-700">Friday</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-slate-600">9:00 AM - 5:00 PM</span>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                    <span class="font-medium text-slate-700">Saturday</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-slate-600">Closed</span>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                    <span class="font-medium text-slate-700">Sunday</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-slate-600">Closed</span>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Time Slots Management -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-slate-900">Appointment Time Slots</h3>
+            <button class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium">
+                Add Time Slot
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div class="p-3 border border-slate-200 rounded-lg text-center">
+                <div class="text-sm font-medium text-slate-900">9:00 AM</div>
+                <div class="text-xs text-slate-600">30 min</div>
+            </div>
+            <div class="p-3 border border-slate-200 rounded-lg text-center">
+                <div class="text-sm font-medium text-slate-900">9:30 AM</div>
+                <div class="text-xs text-slate-600">30 min</div>
+            </div>
+            <div class="p-3 border border-slate-200 rounded-lg text-center">
+                <div class="text-sm font-medium text-slate-900">10:00 AM</div>
+                <div class="text-xs text-slate-600">30 min</div>
+            </div>
+            <div class="p-3 border border-slate-200 rounded-lg text-center">
+                <div class="text-sm font-medium text-slate-900">10:30 AM</div>
+                <div class="text-xs text-slate-600">30 min</div>
+            </div>
+            <div class="p-3 border border-slate-200 rounded-lg text-center">
+                <div class="text-sm font-medium text-slate-900">11:00 AM</div>
+                <div class="text-xs text-slate-600">30 min</div>
+            </div>
+            <div class="p-3 border border-slate-200 rounded-lg text-center">
+                <div class="text-sm font-medium text-slate-900">11:30 AM</div>
+                <div class="text-xs text-slate-600">30 min</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Save Changes -->
+    <div class="flex justify-end mt-6">
+        <button class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium">
+            Save Changes
+        </button>
+    </div>
+</div>
+
+</body>
+</html>
